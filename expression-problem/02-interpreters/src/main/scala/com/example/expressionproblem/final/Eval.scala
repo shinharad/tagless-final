@@ -1,7 +1,9 @@
-package com.example.expressionproblem.`final`
+package com.example
+package expressionproblem
+package `final`
 
 object Eval {
-  implicit val dsl: Exp[Int] =
+  val dsl: Exp[Int] =
     new Exp[Int] {
       override def Lit(n: Int): Int = n
       override def Neg(e: Int): Int = -e

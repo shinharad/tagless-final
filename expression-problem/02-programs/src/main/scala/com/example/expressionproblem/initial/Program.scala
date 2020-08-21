@@ -1,4 +1,6 @@
-package com.example.expressionproblem.initial
+package com.example
+package expressionproblem
+package initial
 
 object Program {
   import Exp._

@@ -1,4 +1,6 @@
-package com.example.expressionproblem.`final`
+package com.example
+package expressionproblem
+package `final`
 
 trait Program[Repr] {
   def repr: Repr

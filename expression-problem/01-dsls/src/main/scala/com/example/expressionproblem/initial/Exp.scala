@@ -1,4 +1,6 @@
-package com.example.expressionproblem.initial
+package com.example
+package expressionproblem
+package initial
 
 sealed abstract class Exp extends Product with Serializable
 object Exp {

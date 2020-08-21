@@ -1,11 +1,13 @@
-package com.example.expressionproblem.initial
+package com.example
+package expressionproblem
+package initial
 
 object View {
-  def apply(exp: Exp): String =
+  def interpret(exp: Exp): String =
     exp match {
       case Exp.Lit(n)      => s"${n}"
-      case Exp.Neg(e)      => s"(-${apply(e)})"
-      case Exp.Add(e1, e2) => s"(${apply(e1)} + ${apply(e2)})"
+      case Exp.Neg(e)      => s"(-${interpret(e)})"
+      case Exp.Add(e1, e2) => s"(${interpret(e1)} + ${interpret(e2)})"
     }
 
   def prefix(exp: Exp): String =
