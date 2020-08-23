@@ -2,22 +2,22 @@ package com.example
 package expressionproblem
 package `final`
 
-trait Program[Repr] {
-  def repr: Repr
+trait Program[A] {
+  def run: A
 }
 
 object Program {
-  def dsl[Repr](implicit exp: Exp[Repr]): Program[Repr] =
-    new Program[Repr] {
-      import exp._
+  def dsl[A](implicit expression: Expression[A]): Program[A] =
+    new Program[A] {
+      import expression._
 
-      val repr: Repr =
-        Add(
-          Lit(16),
-          Neg(
-            Add(
-              Lit(1),
-              Lit(2)
+      override val run: A =
+        add(
+          literal(16),
+          negate(
+            add(
+              literal(1),
+              literal(2)
             )
           )
         )
