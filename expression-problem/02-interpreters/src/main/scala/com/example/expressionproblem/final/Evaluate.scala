@@ -34,6 +34,9 @@ object Evaluate {
       new Division[Int] {
         override def divide(a1: Option[Int], a2: Option[Int]): Option[Int] =
           a1.zip(a2).flatMap {
+            case (_, 0) =>
+              None
+
             case (a1, a2) =>
               if (a1 % a2 == 0)
                 Some(a1 / a2)
