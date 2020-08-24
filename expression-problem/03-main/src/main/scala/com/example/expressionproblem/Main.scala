@@ -54,4 +54,32 @@ object Main extends App {
     .tap(println)
 
   println("-" * 100)
+
+  Program
+    .Division
+    .dsl(Evaluate.Expression.dsl, Evaluate.Multiplication.dsl, Evaluate.Division.dsl)
+    .run
+    .tap(println)
+
+  Program
+    .Division
+    .dsl(View.Expression.dsl, View.Multiplication.dsl, View.Division.dsl)
+    .run
+    .tap(println)
+
+  println("-" * 100)
+
+  Program
+    .DivisionInTheMiddle
+    .dsl(Evaluate.Expression.dsl, Evaluate.Multiplication.dsl, Evaluate.Division.dsl)
+    .run
+    .tap(println)
+
+  Program
+    .DivisionInTheMiddle
+    .dsl(View.Expression.dsl, View.Multiplication.dsl, View.Division.dsl)
+    .run
+    .tap(println)
+
+  println("-" * 100)
 }

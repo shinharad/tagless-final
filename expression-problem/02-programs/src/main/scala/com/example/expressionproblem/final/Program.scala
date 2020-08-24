@@ -6,6 +6,10 @@ trait Program[A] {
   def run: A
 }
 
+trait ProgramOption[A] {
+  def run: Option[A]
+}
+
 object Program {
   object Expression {
     def dsl[A](implicit expression: Expression[A]): Program[A] =
@@ -68,4 +72,58 @@ object Program {
           )
       }
   }
+
+  object Division {
+    def dsl[A](
+        implicit
+        expression: Expression[A],
+        multiplication: Multiplication[A],
+        division: Division[A]
+      ): ProgramOption[A] =
+      new ProgramOption[A] {
+        import expression._
+        import multiplication._
+        import division._
+
+        override val run: Option[A] =
+          divide(
+            Multiplication.dsl.run,
+            literal(2)
+          )
+      }
+  }
+
+  object DivisionInTheMiddle {
+    def dsl[A](
+        implicit
+        expression: Expression[A],
+        multiplication: Multiplication[A],
+        division: Division[A]
+      ): ProgramOption[A] =
+      new ProgramOption[A] {
+        import expression._
+        import multiplication._
+        import division._
+
+        override val run: Option[A] =
+          divide(
+            multiply(
+              literal(2),
+              add(
+                literal(1),
+                literal(2)
+              )
+            ),
+            literal(2)
+          ).map { result =>
+            add(
+              literal(16),
+              negate(
+                result
+              )
+            )
+          }
+      }
+  }
+
 }

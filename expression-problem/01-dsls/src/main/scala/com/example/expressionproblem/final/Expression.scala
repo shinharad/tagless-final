@@ -11,3 +11,7 @@ trait Expression[A] {
 trait Multiplication[A] {
   def multiply(a1: A, a2: A): A
 }
+
+trait Division[A] {
+  def divide(a1: A, a2: A): Option[A]
+}

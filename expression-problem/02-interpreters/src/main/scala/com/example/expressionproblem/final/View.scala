@@ -24,4 +24,12 @@ object View {
           s"(${a1} * ${a2})"
       }
   }
+
+  object Division {
+    val dsl: Division[String] =
+      new Division[String] {
+        override def divide(a1: String, a2: String): Option[String] =
+          Some(s"(${a1} / ${a2})")
+      }
+  }
 }
