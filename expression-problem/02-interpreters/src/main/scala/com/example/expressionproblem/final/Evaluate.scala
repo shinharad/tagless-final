@@ -4,8 +4,8 @@ package `final`
 
 object Evaluate {
   object Expression {
-    val dsl: Expression[Int] =
-      new Expression[Int] {
+    val dsl: Expression[Option, Int] =
+      new Expression[Option, Int] {
         override def literal(n: Int): Option[Int] =
           Some(n)
 
@@ -20,8 +20,8 @@ object Evaluate {
   }
 
   object Multiplication {
-    val dsl: Multiplication[Int] =
-      new Multiplication[Int] {
+    val dsl: Multiplication[Option, Int] =
+      new Multiplication[Option, Int] {
         override def multiply(a1: Option[Int], a2: Option[Int]): Option[Int] =
           a1.zip(a2).map {
             case (a1, a2) => a1 * a2
@@ -30,8 +30,8 @@ object Evaluate {
   }
 
   object Division {
-    val dsl: Division[Int] =
-      new Division[Int] {
+    val dsl: Division[Option, Int] =
+      new Division[Option, Int] {
         override def divide(a1: Option[Int], a2: Option[Int]): Option[Int] =
           a1.zip(a2).flatMap {
             case (_, 0) =>

@@ -4,8 +4,8 @@ package `final`
 
 object View {
   object Expression {
-    val dsl: Expression[String] =
-      new Expression[String] {
+    val dsl: Expression[Option, String] =
+      new Expression[Option, String] {
         override def literal(n: Int): Option[String] =
           Some(s"${n}")
 
@@ -25,8 +25,8 @@ object View {
   }
 
   object Multiplication {
-    val dsl: Multiplication[String] =
-      new Multiplication[String] {
+    val dsl: Multiplication[Option, String] =
+      new Multiplication[Option, String] {
         override def multiply(
             a1: Option[String],
             a2: Option[String]
@@ -39,8 +39,8 @@ object View {
   }
 
   object Division {
-    val dsl: Division[String] =
-      new Division[String] {
+    val dsl: Division[Option, String] =
+      new Division[Option, String] {
         override def divide(
             a1: Option[String],
             a2: Option[String]
