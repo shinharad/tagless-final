@@ -7,3 +7,7 @@ trait Expression[A] {
   def negate(a: A): A
   def add(a1: A, a2: A): A
 }
+
+trait Multiplication[A] {
+  def multiply(a1: A, a2: A): A
+}
