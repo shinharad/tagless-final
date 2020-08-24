@@ -45,4 +45,30 @@ object Evaluate {
           }
       }
   }
+
+  object DivisionEither {
+    type EitherStringOr[A] = Either[String, A]
+
+    val dsl: Division[EitherStringOr, Int] =
+      new Division[EitherStringOr, Int] {
+        override def divide(
+            a1: EitherStringOr[Int],
+            a2: EitherStringOr[Int]
+          ): EitherStringOr[Int] =
+          a1.flatMap { a1 =>
+            a2.flatMap { a2 =>
+              (a1, a2) match {
+                case (_, 0) =>
+                  Left("division by zero")
+
+                case (a1, a2) =>
+                  if (a1 % a2 == 0)
+                    Right(a1 / a2)
+                  else
+                    Left("division ended up having rest")
+              }
+            }
+          }
+      }
+  }
 }
