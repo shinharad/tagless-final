@@ -3,10 +3,6 @@ package expressionproblem
 package `final`
 
 trait Program[A] {
-  def run: A
-}
-
-trait ProgramOption[A] {
   def run: Option[A]
 }
 
@@ -16,7 +12,7 @@ object Program {
       new Program[A] {
         import expression._
 
-        override val run: A =
+        override val run: Option[A] =
           add(
             literal(16),
             negate(
@@ -39,7 +35,7 @@ object Program {
         import expression._
         import multiplication._
 
-        override val run: A =
+        override val run: Option[A] =
           multiply(
             literal(2),
             Expression.dsl.run
@@ -57,7 +53,7 @@ object Program {
         import expression._
         import multiplication._
 
-        override val run: A =
+        override val run: Option[A] =
           add(
             literal(16),
             negate(
@@ -79,8 +75,8 @@ object Program {
         expression: Expression[A],
         multiplication: Multiplication[A],
         division: Division[A]
-      ): ProgramOption[A] =
-      new ProgramOption[A] {
+      ): Program[A] =
+      new Program[A] {
         import expression._
         import multiplication._
         import division._
@@ -99,30 +95,28 @@ object Program {
         expression: Expression[A],
         multiplication: Multiplication[A],
         division: Division[A]
-      ): ProgramOption[A] =
-      new ProgramOption[A] {
+      ): Program[A] =
+      new Program[A] {
         import expression._
         import multiplication._
         import division._
 
         override val run: Option[A] =
-          divide(
-            multiply(
-              literal(2),
-              add(
-                literal(1),
+          add(
+            literal(16),
+            negate(
+              divide(
+                multiply(
+                  literal(2),
+                  add(
+                    literal(1),
+                    literal(2)
+                  )
+                ),
                 literal(2)
               )
-            ),
-            literal(2)
-          ).map { result =>
-            add(
-              literal(16),
-              negate(
-                result
-              )
             )
-          }
+          )
       }
   }
 
