@@ -2,73 +2,51 @@ package com.example
 package expressionproblem
 package `final`
 
+import cats._
+import cats.syntax.all._
+
 object Evaluate {
   object Expression {
-    val dsl: Expression[Option, Int] =
-      new Expression[Option, Int] {
-        override def literal(n: Int): Option[Int] =
-          Some(n)
+    def dsl[F[_]: Applicative]: Expression[F, Int] =
+      new Expression[F, Int] {
+        override def literal(n: Int): F[Int] =
+          n.pure[F]
 
-        override def negate(a: Option[Int]): Option[Int] =
+        override def negate(a: F[Int]): F[Int] =
           a.map(-_)
 
-        override def add(a1: Option[Int], a2: Option[Int]): Option[Int] =
-          a1.zip(a2).map {
-            case (a1, a2) => a1 + a2
-          }
+        override def add(a1: F[Int], a2: F[Int]): F[Int] =
+          (a1, a2).mapN(_ + _)
       }
   }
 
   object Multiplication {
-    val dsl: Multiplication[Option, Int] =
-      new Multiplication[Option, Int] {
-        override def multiply(a1: Option[Int], a2: Option[Int]): Option[Int] =
-          a1.zip(a2).map {
-            case (a1, a2) => a1 * a2
-          }
+    def dsl[F[_]: Apply]: Multiplication[F, Int] =
+      // def dsl[F[_]: Functor: Semigroupal]: Multiplication[F, Int] =
+      new Multiplication[F, Int] {
+        override def multiply(a1: F[Int], a2: F[Int]): F[Int] =
+          (a1, a2).mapN(_ * _)
       }
   }
 
   object Division {
-    val dsl: Division[Option, Int] =
-      new Division[Option, Int] {
-        override def divide(a1: Option[Int], a2: Option[Int]): Option[Int] =
-          a1.zip(a2).flatMap {
+    // type MonadWithStringError[F[_]] = MonadError[F, String]
+    // def dsl[F[_]: MonadWithStringError]: Division[F, Int] =
+
+    def dsl[F[_]: MonadError[*[_], String]]: Division[F, Int] =
+      new Division[F, Int] {
+        override def divide(a1: F[Int], a2: F[Int]): F[Int] =
+          (a1, a2).tupled.flatMap {
             case (_, 0) =>
-              None
+              "division by zero".raiseError[F, Int]
 
             case (a1, a2) =>
               if (a1 % a2 == 0)
-                Some(a1 / a2)
+                (a1 / a2).pure[F]
               else
-                None
+                "division ended up having rest".raiseError[F, Int]
           }
       }
   }
 
-  object DivisionEither {
-    type EitherStringOr[A] = Either[String, A]
-
-    val dsl: Division[EitherStringOr, Int] =
-      new Division[EitherStringOr, Int] {
-        override def divide(
-            a1: EitherStringOr[Int],
-            a2: EitherStringOr[Int]
-          ): EitherStringOr[Int] =
-          a1.flatMap { a1 =>
-            a2.flatMap { a2 =>
-              (a1, a2) match {
-                case (_, 0) =>
-                  Left("division by zero")
-
-                case (a1, a2) =>
-                  if (a1 % a2 == 0)
-                    Right(a1 / a2)
-                  else
-                    Left("division ended up having rest")
-              }
-            }
-          }
-      }
-  }
 }

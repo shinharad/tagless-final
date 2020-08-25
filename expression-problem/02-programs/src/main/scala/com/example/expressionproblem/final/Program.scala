@@ -78,7 +78,7 @@ object Program {
       ): Program[A] =
       new Program[A] {
         import expression._
-        import multiplication._
+        // import multiplication._
         import division._
 
         override val run: Option[A] =
