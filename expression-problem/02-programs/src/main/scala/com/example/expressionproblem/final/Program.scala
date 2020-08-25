@@ -2,17 +2,17 @@ package com.example
 package expressionproblem
 package `final`
 
-trait Program[A] {
-  def run: Option[A]
+trait Program[F[_], A] {
+  def run: F[A]
 }
 
 object Program {
   object Expression {
-    def dsl[A](implicit expression: Expression[Option, A]): Program[A] =
-      new Program[A] {
+    def dsl[F[_], A](implicit expression: Expression[F, A]): Program[F, A] =
+      new Program[F, A] {
         import expression._
 
-        override val run: Option[A] =
+        override val run: F[A] =
           add(
             literal(16),
             negate(
@@ -26,16 +26,16 @@ object Program {
   }
 
   object Multiplication {
-    def dsl[A](
+    def dsl[F[_], A](
         implicit
-        expression: Expression[Option, A],
-        multiplication: Multiplication[Option, A]
-      ): Program[A] =
-      new Program[A] {
+        expression: Expression[F, A],
+        multiplication: Multiplication[F, A]
+      ): Program[F, A] =
+      new Program[F, A] {
         import expression._
         import multiplication._
 
-        override val run: Option[A] =
+        override val run: F[A] =
           multiply(
             literal(2),
             Expression.dsl.run
@@ -44,16 +44,16 @@ object Program {
   }
 
   object MultiplicationInTheMiddle {
-    def dsl[A](
+    def dsl[F[_], A](
         implicit
-        expression: Expression[Option, A],
-        multiplication: Multiplication[Option, A]
-      ): Program[A] =
-      new Program[A] {
+        expression: Expression[F, A],
+        multiplication: Multiplication[F, A]
+      ): Program[F, A] =
+      new Program[F, A] {
         import expression._
         import multiplication._
 
-        override val run: Option[A] =
+        override val run: F[A] =
           add(
             literal(16),
             negate(
@@ -70,18 +70,17 @@ object Program {
   }
 
   object Division {
-    def dsl[A](
+    def dsl[F[_], A](
         implicit
-        expression: Expression[Option, A],
-        multiplication: Multiplication[Option, A],
-        division: Division[Option, A]
-      ): Program[A] =
-      new Program[A] {
+        expression: Expression[F, A],
+        multiplication: Multiplication[F, A],
+        division: Division[F, A]
+      ): Program[F, A] =
+      new Program[F, A] {
         import expression._
-        // import multiplication._
         import division._
 
-        override val run: Option[A] =
+        override val run: F[A] =
           divide(
             Multiplication.dsl.run,
             literal(2)
@@ -90,18 +89,18 @@ object Program {
   }
 
   object DivisionInTheMiddle {
-    def dsl[A](
+    def dsl[F[_], A](
         implicit
-        expression: Expression[Option, A],
-        multiplication: Multiplication[Option, A],
-        division: Division[Option, A]
-      ): Program[A] =
-      new Program[A] {
+        expression: Expression[F, A],
+        multiplication: Multiplication[F, A],
+        division: Division[F, A]
+      ): Program[F, A] =
+      new Program[F, A] {
         import expression._
         import multiplication._
         import division._
 
-        override val run: Option[A] =
+        override val run: F[A] =
           add(
             literal(16),
             negate(

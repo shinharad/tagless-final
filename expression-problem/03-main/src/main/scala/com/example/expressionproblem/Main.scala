@@ -3,13 +3,16 @@ package expressionproblem
 
 import scala.util.chaining._
 
+import cats._
+import cats.instances.all._
+
 object Main extends App {
   println("-" * 100)
 
-  initial.Eval.interpret(initial.Program.exp).tap(println)
-  initial.View.interpret(initial.Program.exp).tap(println)
-  initial.View.prefix(initial.Program.exp).tap(println)
-  println("-" * 100)
+  // initial.Eval.interpret(initial.Program.exp).tap(println)
+  // initial.View.interpret(initial.Program.exp).tap(println)
+  // initial.View.prefix(initial.Program.exp).tap(println)
+  // println("-" * 100)
 
   import `final`._
 
