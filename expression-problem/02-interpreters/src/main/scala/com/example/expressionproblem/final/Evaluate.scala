@@ -47,7 +47,9 @@ object Evaluate {
         override def divide(a1: F[Int], a2: F[Int]): F[Int] =
           (a1, a2).parTupled.flatMap {
             case (_, 0) =>
-              "division by zero".pure[NonEmptyChain].raiseError[F, Int]
+              "division by zero"
+                .pure[NonEmptyChain]
+                .raiseError[F, Int]
 
             case (a1, a2) =>
               if (a1 % a2 == 0)
