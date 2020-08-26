@@ -3,6 +3,7 @@ package expressionproblem
 package `final`
 
 import cats._
+import cats.data._
 import cats.syntax.all._
 
 object Evaluate {
@@ -23,34 +24,38 @@ object Evaluate {
   }
 
   object Addition {
-    def dsl[F[_]: Apply]: Addition[F, Int] =
+    def dsl[F[_]: Apply: NonEmptyParallel]: Addition[F, Int] =
       new Addition[F, Int] {
         override def add(a1: F[Int], a2: F[Int]): F[Int] =
-          (a1, a2).mapN(_ + _)
+          (a1, a2).parMapN(_ + _)
       }
   }
 
   object Multiplication {
-    def dsl[F[_]: Apply]: Multiplication[F, Int] =
+    def dsl[F[_]: Apply: NonEmptyParallel]: Multiplication[F, Int] =
       new Multiplication[F, Int] {
         override def multiply(a1: F[Int], a2: F[Int]): F[Int] =
-          (a1, a2).mapN(_ * _)
+          (a1, a2).parMapN(_ * _)
       }
   }
 
   object Division {
-    def dsl[F[_]: MonadError[*[_], String]]: Division[F, Int] =
+    def dsl[
+        F[_]: MonadError[*[_], NonEmptyChain[String]]: NonEmptyParallel
+      ]: Division[F, Int] =
       new Division[F, Int] {
         override def divide(a1: F[Int], a2: F[Int]): F[Int] =
-          (a1, a2).tupled.flatMap {
+          (a1, a2).parTupled.flatMap {
             case (_, 0) =>
-              "division by zero".raiseError[F, Int]
+              "division by zero".pure[NonEmptyChain].raiseError[F, Int]
 
             case (a1, a2) =>
               if (a1 % a2 == 0)
                 (a1 / a2).pure[F]
               else
-                "division ended up having rest".raiseError[F, Int]
+                "division ended up having rest"
+                  .pure[NonEmptyChain]
+                  .raiseError[F, Int]
           }
       }
   }
