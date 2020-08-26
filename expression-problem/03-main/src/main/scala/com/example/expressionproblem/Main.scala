@@ -155,4 +155,32 @@ object Main extends App {
     .tap(println)
 
   println("-" * 100)
+
+  // format: off
+  Program
+    .DivisionWithTwoErrors
+ // .dsl[Either [           NonEmptyChain[String], *], Int](
+ // .dsl[EitherT[Id,        NonEmptyChain[String], *], Int](
+    .dsl[EitherT[effect.IO, NonEmptyChain[String], *], Int](
+      Evaluate.Literal.dsl,
+      Evaluate.Addition.dsl,
+      Evaluate.Division.dsl
+    )
+    .run
+    .tap(println)
+    .tap(_.value.tap(println))
+    .tap(_.value.unsafeRunSync().tap(println))
+  // format: on
+
+  Program
+    .DivisionWithTwoErrors
+    .dsl[Id, String](
+      View.Literal.dsl,
+      View.Addition.dsl,
+      View.Division.dsl
+    )
+    .run
+    .tap(println)
+
+  println("-" * 100)
 }
