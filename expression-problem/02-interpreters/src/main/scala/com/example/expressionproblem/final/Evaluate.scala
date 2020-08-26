@@ -6,15 +6,25 @@ import cats._
 import cats.syntax.all._
 
 object Evaluate {
-  object Expression {
-    def dsl[F[_]: Applicative]: Expression[F, Int] =
-      new Expression[F, Int] {
+  object Literal {
+    def dsl[F[_]: Applicative]: Literal[F, Int] =
+      new Literal[F, Int] {
         override def literal(n: Int): F[Int] =
           n.pure[F]
+      }
+  }
 
+  object Negation {
+    def dsl[F[_]: Functor]: Negation[F, Int] =
+      new Negation[F, Int] {
         override def negate(a: F[Int]): F[Int] =
           a.map(-_)
+      }
+  }
 
+  object Addition {
+    def dsl[F[_]: Apply]: Addition[F, Int] =
+      new Addition[F, Int] {
         override def add(a1: F[Int], a2: F[Int]): F[Int] =
           (a1, a2).mapN(_ + _)
       }
@@ -22,7 +32,6 @@ object Evaluate {
 
   object Multiplication {
     def dsl[F[_]: Apply]: Multiplication[F, Int] =
-      // def dsl[F[_]: Functor: Semigroupal]: Multiplication[F, Int] =
       new Multiplication[F, Int] {
         override def multiply(a1: F[Int], a2: F[Int]): F[Int] =
           (a1, a2).mapN(_ * _)
@@ -30,9 +39,6 @@ object Evaluate {
   }
 
   object Division {
-    // type MonadWithStringError[F[_]] = MonadError[F, String]
-    // def dsl[F[_]: MonadWithStringError]: Division[F, Int] =
-
     def dsl[F[_]: MonadError[*[_], String]]: Division[F, Int] =
       new Division[F, Int] {
         override def divide(a1: F[Int], a2: F[Int]): F[Int] =

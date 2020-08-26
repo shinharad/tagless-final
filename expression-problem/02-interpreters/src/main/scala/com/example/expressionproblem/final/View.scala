@@ -6,18 +6,27 @@ import cats._
 import cats.syntax.all._
 
 object View {
-  object Expression {
-    def dsl[F[_]: Applicative]: Expression[F, String] =
-      new Expression[F, String] {
+  object Literal {
+    def dsl[F[_]: Applicative]: Literal[F, String] =
+      new Literal[F, String] {
         override def literal(n: Int): F[String] =
           s"${n}".pure[F]
+      }
+  }
 
+  object Negation {
+    def dsl[F[_]: Functor]: Negation[F, String] =
+      new Negation[F, String] {
         override def negate(a: F[String]): F[String] =
           a.map(a => s"(-${a})")
+      }
+  }
 
+  object Addition {
+    def dsl[F[_]: Apply]: Addition[F, String] =
+      new Addition[F, String] {
         override def add(a1: F[String], a2: F[String]): F[String] =
           (a1, a2).mapN((a1, a2) => s"(${a1} + ${a2})")
-
       }
   }
 

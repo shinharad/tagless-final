@@ -2,9 +2,15 @@ package com.example
 package expressionproblem
 package `final`
 
-trait Expression[F[_], A] {
+trait Literal[F[_], A] {
   def literal(n: Int): F[A]
+}
+
+trait Negation[F[_], A] {
   def negate(a: F[A]): F[A]
+}
+
+trait Addition[F[_], A] {
   def add(a1: F[A], a2: F[A]): F[A]
 }
 
