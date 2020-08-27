@@ -1,8 +1,6 @@
 import scala.util._
 import scala.sys.process._
 
-import Util._
-
 import sbt._
 
 object Util {
