@@ -2,6 +2,9 @@ package com.example
 package todo
 package crud
 
+import cats.Functor
+import cats.implicits._
+
 trait Boundary[F[_]] {
   def createOne(todo: Todo.Data): F[Todo.Existing]
   def createMany(todos: Vector[Todo.Data]): F[Vector[Todo.Existing]]
@@ -22,35 +25,30 @@ trait Boundary[F[_]] {
 }
 
 object Boundary {
-  trait Functor[F[_]] {
-    def map[A, B](fa: F[A])(ab: A => B): F[B]
-  }
-
-  final implicit class FunctorOps[F[_]: Functor, A](
-      private val fa: F[A]
-    ) {
-
-    @inline def map[B](ab: A => B): F[B] =
-      F.map(fa)(ab)
-  }
-
   def dsl[F[_]: Functor](
       gateway: EntityGateway[F]
     ): Boundary[F] =
     new Boundary[F] {
-
       override def createOne(todo: Todo.Data): F[Todo.Existing] =
-        // createMany(Vector(todo)).map(_.head)
-        F.map(createMany(Vector(todo)))(_.head)
+        createMany(Vector(todo)).map(_.head)
 
       override def createMany(
           todos: Vector[Todo.Data]
-        ): F[Vector[Todo.Existing]] = ???
+        ): F[Vector[Todo.Existing]] =
+        writeMany(todos)
 
-      override def readOneById(id: String): F[Option[Todo.Existing]] = ???
+      private def writeMany[T <: Todo](
+          todos: Vector[T]
+        ): F[Vector[Todo.Existing]] =
+        gateway.writeMany(
+          todos.map(todo => todo.withUpdatedDescription(todo.description.trim))
+        )
+
+      override def readOneById(id: String): F[Option[Todo.Existing]] =
+        readManyById(Vector(id)).map(_.headOption)
 
       override def readManyById(ids: Vector[String]): F[Vector[Todo.Existing]] =
-        ???
+        gateway.readManyById(ids)
 
       override def readManyByPartialDescription(
           partialDescription: String
