@@ -26,11 +26,15 @@ object Boundary {
     def map[A, B](fa: F[A])(ab: A => B): F[B]
   }
 
+  object Functor {
+    def apply[F[_]: Functor]: Functor[F] = implicitly[Functor[F]]
+  }
+
   final implicit class FunctorOps[F[_]: Functor, A](
     private val fa: F[A]
   ) {
     @inline def map[B](ab: A => B): F[B] =
-      implicitly[Functor[F]].map(fa)(ab)
+      Functor[F].map(fa)(ab)
   }
 
   def dsl[F[_]](
