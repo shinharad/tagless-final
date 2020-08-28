@@ -26,6 +26,13 @@ object Boundary {
     def map[A, B](fa: F[A])(ab: A => B): F[B]
   }
 
+  final implicit class FunctorOps[F[_], A](
+    private val fa: F[A]
+  )(implicit functor: Functor[F]) {
+    @inline def map[B](ab: A => B): F[B] =
+      functor.map(fa)(ab)
+  }
+
   def dsl[F[_]](
       gateway: EntityGateway[F]
     )(implicit
@@ -34,7 +41,7 @@ object Boundary {
     new Boundary[F] {
 
       override def createOne(todo: Todo.Data): F[Todo.Existing] =
-        functor.map(createMany(Vector(todo)))(_.head)
+        createMany(Vector(todo)).map(_.head)
 
       override def createMany(
           todos: Vector[Todo.Data]
