@@ -22,10 +22,19 @@ trait Boundary[F[_]] {
 }
 
 object Boundary {
-  def dsl[F[_]](gateway: EntityGateway[F]): Boundary[F] =
+  trait Functor[F[_]] {
+    def map[A, B](fa: F[A])(ab: A => B): F[B]
+  }
+
+  def dsl[F[_]](
+      gateway: EntityGateway[F]
+    )(implicit
+      functor: Functor[F]
+    ): Boundary[F] =
     new Boundary[F] {
 
-      override def createOne(todo: Todo.Data): F[Todo.Existing] = ???
+      override def createOne(todo: Todo.Data): F[Todo.Existing] =
+        functor.map(createMany(Vector(todo)))(_.head)
 
       override def createMany(
           todos: Vector[Todo.Data]
