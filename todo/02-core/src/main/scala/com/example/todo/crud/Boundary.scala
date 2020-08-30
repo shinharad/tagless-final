@@ -58,19 +58,24 @@ object Boundary {
         else
           gateway.readManyByPartialDescription(partialDescription.trim)
 
-      override def readAll: F[Vector[Todo.Existing]] = ???
+      override def readAll: F[Vector[Todo.Existing]] =
+        gateway.readAll
 
-      override def updateOne(todo: Todo.Existing): F[Todo.Existing] = ???
+      override def updateOne(todo: Todo.Existing): F[Todo.Existing] =
+        updateMany(Vector(todo)).map(_.head)
 
       override def updateMany(
           todos: Vector[Todo.Existing]
-        ): F[Vector[Todo.Existing]] = ???
+        ): F[Vector[Todo.Existing]] =
+        writeMany(todos)
 
-      override def deleteOne(todo: Todo.Existing): F[Unit] = ???
+      override def deleteOne(todo: Todo.Existing): F[Unit] =
+        deleteMany(Vector(todo))
 
-      override def deleteMany(todos: Vector[Todo.Existing]): F[Unit] = ???
+      override def deleteMany(todos: Vector[Todo.Existing]): F[Unit] =
+        gateway.deleteMany(todos)
 
-      override def deleteAll: F[Unit] = ???
-
+      override def deleteAll: F[Unit] =
+        gateway.deleteAll
     }
 }
