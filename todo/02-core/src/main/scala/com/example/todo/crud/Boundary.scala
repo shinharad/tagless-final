@@ -2,7 +2,7 @@ package com.example
 package todo
 package crud
 
-import cats.Functor
+import cats._
 import cats.implicits._
 
 trait Boundary[F[_]] {
@@ -25,7 +25,7 @@ trait Boundary[F[_]] {
 }
 
 object Boundary {
-  def dsl[F[_]: Functor](
+  def dsl[F[_]: Applicative](
       gateway: EntityGateway[F]
     ): Boundary[F] =
     new Boundary[F] {
@@ -52,7 +52,11 @@ object Boundary {
 
       override def readManyByPartialDescription(
           partialDescription: String
-        ): F[Vector[Todo.Existing]] = ???
+        ): F[Vector[Todo.Existing]] =
+        if (partialDescription.isEmpty)
+          Vector.empty.pure[F]
+        else
+          gateway.readManyByPartialDescription(partialDescription.trim)
 
       override def readAll: F[Vector[Todo.Existing]] = ???
 
