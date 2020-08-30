@@ -2,11 +2,34 @@ package com.example
 package todo
 package crud
 
-object InMemoryEntityGateway {
-  def dsl[F[_]]: EntityGateway[F] =
-    new EntityGateway[F] {
+import cats._
+import cats.implicits._
 
-      override def writeMany(todos: Vector[Todo]): F[Vector[Todo.Existing]] = ???
+object InMemoryEntityGateway {
+  def dsl[F[_]: Applicative: Defer]: EntityGateway[F] =
+    new EntityGateway[F] {
+      var nextId: Int = 0
+      var state: Vector[Todo.Existing] = Vector.empty
+
+      override def writeMany(todos: Vector[Todo]): F[Vector[Todo.Existing]] =
+        ???
+
+      private def createOne(todo: Todo.Data): F[Todo.Existing] =
+        F.defer {
+          F.pure {
+            val created =
+              Todo.Existing(
+                id = nextId.toString,
+                data = todo
+              )
+
+            state :+= created
+
+            nextId += 1
+
+            created
+          }
+        }
 
       override def readManyById(ids: Vector[String]): F[Vector[Todo.Existing]] =
         ???
