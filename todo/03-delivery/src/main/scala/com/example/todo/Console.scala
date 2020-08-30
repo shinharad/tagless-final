@@ -13,7 +13,7 @@ object Console {
     new Console {
 
       override def getStrLn: String =
-        scala.io.StdIn.readLine
+        scala.io.StdIn.readLine()
 
       override def getStrLnWithPrompt(prompt: String): String =
         scala.io.StdIn.readLine(prompt)

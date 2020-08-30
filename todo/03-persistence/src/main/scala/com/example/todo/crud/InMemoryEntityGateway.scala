@@ -3,60 +3,23 @@ package todo
 package crud
 
 object InMemoryEntityGateway {
-  val dsl: EntityGatewayOld = {
-    var nextId: Int = 0
-    var state: Vector[Todo.Existing] = Vector.empty
+  def dsl[F[_]]: EntityGateway[F] =
+    new EntityGateway[F] {
 
-    new EntityGatewayOld {
-      override def writeMany(todos: Vector[Todo]): Vector[Todo.Existing] =
-        todos.map(writeOne)
+      override def writeMany(todos: Vector[Todo]): F[Vector[Todo.Existing]] = ???
 
-      private def writeOne(todo: Todo): Todo.Existing =
-        todo match {
-          case item: Todo.Data     => createOne(item)
-          case item: Todo.Existing => updateOne(item)
-        }
-
-      private def createOne(todo: Todo.Data): Todo.Existing = {
-        val created =
-          Todo.Existing(
-            id = nextId.toString,
-            data = todo
-          )
-
-        state :+= created
-
-        nextId += 1
-
-        created
-      }
-
-      override def readManyById(ids: Vector[String]): Vector[Todo.Existing] =
-        state.filter(todo => ids.contains(todo.id))
+      override def readManyById(ids: Vector[String]): F[Vector[Todo.Existing]] =
+        ???
 
       override def readManyByPartialDescription(
           partialDescription: String
-        ): Vector[Todo.Existing] =
-        state.filter(
-          _.description
-            .toLowerCase
-            .contains(partialDescription.toLowerCase)
-        )
+        ): F[Vector[Todo.Existing]] = ???
 
-      override def readAll: Vector[Todo.Existing] =
-        state
+      override def readAll: F[Vector[Todo.Existing]] = ???
 
-      private def updateOne(todo: Todo.Existing): Todo.Existing = {
-        state = state.filterNot(_.id == todo.id) :+ todo
+      override def deleteMany(todos: Vector[Todo.Existing]): F[Unit] = ???
 
-        todo
-      }
+      override def deleteAll: F[Unit] = ???
 
-      override def deleteMany(todos: Vector[Todo.Existing]): Unit =
-        state = state.filterNot(todo => todos.map(_.id).contains(todo.id))
-
-      override def deleteAll: Unit =
-        state = Vector.empty
     }
-  }
 }
