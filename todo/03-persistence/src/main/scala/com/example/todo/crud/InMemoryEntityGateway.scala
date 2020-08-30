@@ -6,7 +6,7 @@ import cats._
 import cats.implicits._
 
 object InMemoryEntityGateway {
-  def dsl[F[_]: Applicative: Defer]: EntityGateway[F] =
+  def dsl[F[_]: Delay]: EntityGateway[F] =
     new EntityGateway[F] {
       var nextId: Int = 0
       var state: Vector[Todo.Existing] = Vector.empty
@@ -15,20 +15,18 @@ object InMemoryEntityGateway {
         ???
 
       private def createOne(todo: Todo.Data): F[Todo.Existing] =
-        F.defer {
-          F.pure {
-            val created =
-              Todo.Existing(
-                id = nextId.toString,
-                data = todo
-              )
+        F.delay {
+          val created =
+            Todo.Existing(
+              id = nextId.toString,
+              data = todo
+            )
 
-            state :+= created
+          state :+= created
 
-            nextId += 1
+          nextId += 1
 
-            created
-          }
+          created
         }
 
       override def readManyById(ids: Vector[String]): F[Vector[Todo.Existing]] =
