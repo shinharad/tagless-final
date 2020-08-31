@@ -41,21 +41,10 @@ package object implicits {
         x == y
     }
 
-  // implicit val ApplicativeForId: Applicative[Id] =
-  //   new Applicative[Id] {
-  //     override def map[A, B](fa: Id[A])(ab: A => B): Id[B] =
-  //       ab(fa)
-
-  //     override def pure[A](a: A): Id[A] =
-  //       a
-
-  //   }
-
   implicit val TraverseForVector: Traverse[Vector] =
     new Traverse[Vector] {
       override def map[A, B](fa: Vector[A])(ab: A => B): Vector[B] =
         fa.map(ab)
-      // traverse[Id, A, B](fa)(ab)
 
       override def traverse[G[_]: Applicative, A, B](
           fa: Vector[A]
@@ -70,7 +59,7 @@ package object implicits {
             def prepend(b: B, vb: Vector[B]): Vector[B] =
               b +: vb
 
-            ???
+            G.map2(gbCur, gbAcc)(prepend)
         }
 
     }
