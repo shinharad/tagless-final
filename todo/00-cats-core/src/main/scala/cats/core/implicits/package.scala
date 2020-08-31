@@ -12,4 +12,18 @@ package object implicits {
     @inline def pure[F[_]: Applicative]: F[A] =
       F.pure(a)
   }
+
+  final implicit class EqOps[A: Eq](private val x: A) {
+    @inline def ===(y: A): Boolean =
+      A.eqv(x, y)
+
+    @inline def =!=(y: A): Boolean =
+      A.neqv(x, y)
+  }
+
+  implicit val EqForString: Eq[String] =
+    new Eq[String] {
+      def eqv(x: String, y: String): Boolean =
+        x == y
+    }
 }
