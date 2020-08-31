@@ -12,7 +12,8 @@ object InMemoryEntityGateway {
       var state: Vector[Todo.Existing] = Vector.empty
 
       override def writeMany(todos: Vector[Todo]): F[Vector[Todo.Existing]] =
-        todos.traverse(writeOne)
+        todos.map(writeOne).sequence
+        // todos.traverse(writeOne)
 
       private def writeOne(todo: Todo): F[Todo.Existing] =
         todo match {

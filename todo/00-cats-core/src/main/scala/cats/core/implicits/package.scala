@@ -17,6 +17,13 @@ package object implicits {
       F.map(fa)(_ => ())
   }
 
+  final implicit class SequenceOps[F[_]: Traverse, G[_]: Applicative, A](
+    private val fga: F[G[A]]
+  ) {
+    @inline def sequence: G[F[A]] =
+      F.sequence(fga)
+  }
+
   final implicit class TraverseOps[F[_]: Traverse, A](private val fa: F[A]) {
     @inline def traverse[G[_]: Applicative, B](agb: A => G[B]): G[F[B]] =
       F.traverse(fa)(agb)
