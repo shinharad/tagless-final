@@ -51,16 +51,39 @@ package object implicits {
         )(
           agb: A => G[B]
         ): G[Vector[B]] =
-        fa.foldRight(Vector.empty[B].pure[G]) {
-          (current: A, acc: G[Vector[B]]) =>
-            val gbCur: G[B] = agb(current)
-            val gbAcc: G[Vector[B]] = acc
-
-            def prepend(b: B, vb: Vector[B]): Vector[B] =
-              b +: vb
-
-            G.map2(gbCur, gbAcc)(prepend)
+        fa.foldRight(Vector.empty[B].pure[G]) { (current, acc) =>
+          G.map2(agb(current), acc)(_ +: _)
         }
-
     }
+
+  implicit val TraverseForList: Traverse[List] =
+    new Traverse[List] {
+      override def map[A, B](fa: List[A])(ab: A => B): List[B] =
+        fa.map(ab)
+
+      override def traverse[G[_]: Applicative, A, B](
+          fa: List[A]
+        )(
+          agb: A => G[B]
+        ): G[List[B]] =
+        fa.foldRight(List.empty[B].pure[G]) { (current, acc) =>
+          G.map2(agb(current), acc)(_ +: _)
+        }
+    }
+
+  implicit val TraverseForSet: Traverse[Set] =
+    new Traverse[Set] {
+      override def map[A, B](fa: Set[A])(ab: A => B): Set[B] =
+        fa.map(ab)
+
+      override def traverse[G[_]: Applicative, A, B](
+          fa: Set[A]
+        )(
+          agb: A => G[B]
+        ): G[Set[B]] =
+        fa.foldLeft(Set.empty[B].pure[G]) { (acc, current) =>
+          G.map2(acc, agb(current))(_ + _)
+        }
+    }
+
 }
