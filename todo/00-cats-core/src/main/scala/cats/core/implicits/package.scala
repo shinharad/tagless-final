@@ -6,6 +6,12 @@ package object implicits {
     ) {
     @inline def map[B](ab: A => B): F[B] =
       F.map(fa)(ab)
+
+    @inline def as[B](b: B): F[B] =
+      F.map(fa)(_ => b)
+
+    @inline def void: F[Unit] =
+      F.map(fa)(_ => ())
   }
 
   final implicit class AnyOps[A](private val a: A) {
