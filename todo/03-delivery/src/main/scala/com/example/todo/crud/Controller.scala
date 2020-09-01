@@ -15,7 +15,7 @@ trait Controller[F[_]] {
 }
 
 object Controller {
-  def dsl[F[_]: FancyConsole: Random: FlatMap: Functor](
+  def dsl[F[_]: FancyConsole: Random: Monad](
       boundary: Boundary[F],
       pattern: DateTimeFormatter
     ): Controller[F] =
@@ -66,8 +66,40 @@ object Controller {
             Set("e", "q", "exit", "quit")(s)
         }
 
+        def loop(shouldKeepLooping: Boolean): F[Unit] =
+          if (shouldKeepLooping)
+            prompt
+              .flatMap {
+                case "c"    => create.as(true)
+                case "d"    => delete.as(true)
+                case "da"   => deleteAll.as(true)
+                case "sa"   => showAll.as(true)
+                case "sd"   => searchByPartialDescription.as(true)
+                case "sid"  => searchById.as(true)
+                case "ud"   => updateDescription.as(true)
+                case "udl"  => updateDeadline.as(true)
+                case Exit() => exit.as(false)
+                case _      => true.pure[F]
+              }
+              .flatMap(loop)
+          else
+            ().pure[F]
+
+        loop(shouldKeepLooping = true)
+
         ???
       }
+
+      private val create: F[Unit] = ???
+      private val delete: F[Unit] = ???
+      private val deleteAll: F[Unit] = ???
+      private val showAll: F[Unit] = ???
+      private val searchByPartialDescription: F[Unit] = ???
+      private val searchById: F[Unit] = ???
+      private val updateDescription: F[Unit] = ???
+      private val updateDeadline: F[Unit] = ???
+      private val exit: F[Unit] = ???
+
     }
 
   private val DeadlinePromptPattern: String =
