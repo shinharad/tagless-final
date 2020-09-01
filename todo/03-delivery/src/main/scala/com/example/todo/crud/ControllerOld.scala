@@ -57,7 +57,7 @@ object ControllerOld {
               |Please enter a command:""".stripMargin
 
         def prompt: String =
-          fancyConsole.getStrLnTrimmedWithPrompt(menu)
+          menu.pipe(fancyConsole.getStrLnTrimmedWithPrompt)
 
         object Exit {
           def unapply(s: String): Boolean =

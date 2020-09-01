@@ -58,6 +58,9 @@ object Controller {
               |Please enter a command:""".stripMargin
           }
 
+        val prompt: F[String] = ???
+          // menu.flatMap(F.getStrLnTrimmedWithPrompt)
+
         ???
       }
     }
