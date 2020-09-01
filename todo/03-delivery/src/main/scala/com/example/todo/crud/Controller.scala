@@ -85,12 +85,57 @@ object Controller {
           else
             ().pure[F]
 
-        loop(shouldKeepLooping = true)
+        prompt
+          .flatMap {
+            case "c"    => create.as(true)
+            case "d"    => delete.as(true)
+            case "da"   => deleteAll.as(true)
+            case "sa"   => showAll.as(true)
+            case "sd"   => searchByPartialDescription.as(true)
+            case "sid"  => searchById.as(true)
+            case "ud"   => updateDescription.as(true)
+            case "udl"  => updateDeadline.as(true)
+            case Exit() => exit.as(false)
+            case _      => true.pure[F]
+          }
+          .iterateWhile(identity)
+          .void
 
         ???
       }
 
       private val create: F[Unit] = ???
+
+      private val descriptionPrompt: F[String] =
+        F.getStrLnTrimmedWithPrompt("Please enter a description:")
+
+      private def withDeadlinePrompt(onSuccess: LocalDateTime => F[Unit]): F[Unit] =
+        deadlinePrompt.map(toLocalDateTime).map {
+          case Right(deadline) => onSuccess(deadline)
+          case Left(error)     => F.putError(error)
+        }
+
+      private val deadlinePrompt: F[String] =
+        F.getStrLnTrimmedWithPrompt(
+          s"Please enter a deadline in the following format $DeadlinePromptFormat:"
+        )
+
+      private def toLocalDateTime(
+          input: String
+        ): Either[String, LocalDateTime] = {
+        val formatter = DateTimeFormatter.ofPattern(DeadlinePromptPattern)
+
+        Try(LocalDateTime.parse(input, formatter))
+          .toEither
+          .left
+          .map { _ =>
+            val renderedInput: String =
+              inColor(input)(scala.Console.YELLOW)
+
+            s"\n$renderedInput does not match the required format $DeadlinePromptFormat.${scala.Console.RESET}"
+          }
+      }
+
       private val delete: F[Unit] = ???
       private val deleteAll: F[Unit] = ???
       private val showAll: F[Unit] = ???
