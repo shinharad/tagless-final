@@ -15,7 +15,7 @@ trait Controller[F[_]] {
 }
 
 object Controller {
-  def dsl[F[_]: FancyConsole: Random: Functor](
+  def dsl[F[_]: FancyConsole: Random: FlatMap: Functor](
       boundary: Boundary[F],
       pattern: DateTimeFormatter
     ): Controller[F] =
@@ -58,8 +58,13 @@ object Controller {
               |Please enter a command:""".stripMargin
           }
 
-        val prompt: F[String] = ???
-          // menu.flatMap(F.getStrLnTrimmedWithPrompt)
+        val prompt: F[String] =
+          menu.flatMap(F.getStrLnTrimmedWithPrompt)
+
+        object Exit {
+          def unapply(s: String): Boolean =
+            Set("e", "q", "exit", "quit")(s)
+        }
 
         ???
       }
