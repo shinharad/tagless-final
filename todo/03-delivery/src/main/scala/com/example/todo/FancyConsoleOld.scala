@@ -12,7 +12,7 @@ trait FancyConsoleOld {
 }
 
 object FancyConsoleOld {
-  implicit def dsl(implicit console: Console): FancyConsoleOld =
+  implicit def dsl(implicit console: ConsoleOld): FancyConsoleOld =
     new FancyConsoleOld {
       override def getStrLnTrimmed: String =
         console.getStrLn.pipe(_.trim)

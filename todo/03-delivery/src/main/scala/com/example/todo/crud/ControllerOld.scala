@@ -37,7 +37,7 @@ object ControllerOld {
           random.nextInt(colors.size).pipe(colors)
 
         def hyphens: String =
-          inColor("─" * 100)(randomColor)
+          randomColor.pipe(inColor("─" * 100))
 
         def menu: String =
           s"""|
@@ -252,10 +252,10 @@ object ControllerOld {
         println("\nUntil next time!\n")
     }
 
-  private def DeadlinePromptPattern(): String =
+  private val DeadlinePromptPattern: String =
     "yyyy-M-d H:m"
 
-  private def DeadlinePromptFormat(): String =
+  private val DeadlinePromptFormat: String =
     inColor(DeadlinePromptPattern)(scala.Console.MAGENTA)
 
   private def inColor(line: String)(color: String): String =
