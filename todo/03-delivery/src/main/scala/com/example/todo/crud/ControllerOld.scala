@@ -114,7 +114,8 @@ object ControllerOld {
       private def toLocalDateTime(
           input: String
         ): Either[String, LocalDateTime] = {
-        val formatter = DateTimeFormatter.ofPattern(DeadlinePromptPattern)
+        val formatter = DateTimeFormatter
+          .ofPattern(DeadlinePromptPattern)
 
         Try(LocalDateTime.parse(input, formatter))
           .toEither

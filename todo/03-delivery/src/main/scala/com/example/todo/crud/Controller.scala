@@ -100,14 +100,18 @@ object Controller {
           }
           .iterateWhile(identity)
           .void
-
-        ???
       }
-
-      private val create: F[Unit] = ???
 
       private val descriptionPrompt: F[String] =
         F.getStrLnTrimmedWithPrompt("Please enter a description:")
+
+      private val create: F[Unit] =
+        descriptionPrompt.flatMap { description =>
+          withDeadlinePrompt { deadline =>
+            boundary.createOne(Todo.Data(description, deadline)) >>
+              F.putSuccess("Successfully created the new todo.")
+          }
+        }
 
       private def withDeadlinePrompt(
           onSuccess: LocalDateTime => F[Unit]
@@ -125,7 +129,8 @@ object Controller {
       private def toLocalDateTime(
           input: String
         ): Either[String, LocalDateTime] = {
-        val formatter = DateTimeFormatter.ofPattern(DeadlinePromptPattern)
+        val formatter = DateTimeFormatter
+          .ofPattern(DeadlinePromptPattern)
 
         Try(LocalDateTime.parse(input, formatter))
           .toEither
@@ -138,14 +143,118 @@ object Controller {
           }
       }
 
-      private val delete: F[Unit] = ???
-      private val deleteAll: F[Unit] = ???
-      private val showAll: F[Unit] = ???
-      private val searchByPartialDescription: F[Unit] = ???
-      private val searchById: F[Unit] = ???
-      private val updateDescription: F[Unit] = ???
-      private val updateDeadline: F[Unit] = ???
-      private val exit: F[Unit] = ???
+      private val delete: F[Unit] =
+        withIdPrompt { id =>
+          withReadOne(id) { todo =>
+            boundary.deleteOne(todo) >>
+              F.putSuccess("Successfully deleted the todo.")
+          }
+        }
+
+      private val idPrompt: F[String] =
+        F.getStrLnTrimmedWithPrompt("Please enter the id:")
+
+      private def withIdPrompt(onValidId: String => F[Unit]): F[Unit] =
+        idPrompt.map(toId).flatMap {
+          case Right(id)   => onValidId(id)
+          case Left(error) => F.putError(error)
+        }
+
+      private def toId(userInput: String): Either[String, String] =
+        if (userInput.isEmpty || userInput.contains(" "))
+          Left(
+            s"\n${scala.Console.YELLOW + userInput + scala.Console.RED} is not a valid id.${scala.Console.RESET}"
+          )
+        else
+          Right(userInput)
+
+      private def withReadOne(
+          id: String
+        )(
+          onFound: Todo.Existing => F[Unit]
+        ): F[Unit] =
+        boundary
+          .readOneById(id)
+          .flatMap {
+            case Some(todo) => onFound(todo)
+            case None       => displayNoTodosFoundMessage
+          }
+
+      private val displayNoTodosFoundMessage: F[Unit] =
+        F.putWarning("\nNo todos found!")
+
+      private val deleteAll: F[Unit] =
+        boundary.deleteAll >>
+          F.putSuccess("Successfully deleted all todos.")
+
+      private val showAll: F[Unit] =
+        boundary.readAll.flatMap(displayZeroOrMany)
+
+      private def displayZeroOrMany(todos: Vector[Todo.Existing]): F[Unit] =
+        if (todos.isEmpty)
+          displayNoTodosFoundMessage
+        else {
+          val uxMatters = if (todos.size == 1) "todo" else "todos"
+
+          val renderedSize: String =
+            inColor(todos.size.toString)(scala.Console.GREEN)
+
+          F.putStrLn(s"\nFound $renderedSize $uxMatters:\n") >>
+            todos
+              .sortBy(_.deadline)
+              .map(renderedWithPattern)
+              .traverse(F.putStrLn)
+              .void
+        }
+
+      private def renderedWithPattern(todo: Todo.Existing): String = {
+        val renderedId: String =
+          inColor(todo.id.toString)(scala.Console.GREEN)
+
+        val renderedDescription: String =
+          inColor(todo.description)(scala.Console.MAGENTA)
+
+        val renderedDeadline: String =
+          inColor(todo.deadline.format(pattern))(scala.Console.YELLOW)
+
+        s"$renderedId $renderedDescription is due on $renderedDeadline."
+      }
+
+      private val searchByPartialDescription: F[Unit] =
+        descriptionPrompt
+          .flatMap(boundary.readManyByPartialDescription)
+          .flatMap(displayZeroOrMany)
+
+      private val searchById: F[Unit] =
+        withIdPrompt { id =>
+          boundary
+            .readOneById(id)
+            .map(_.to(Vector))
+            .flatMap(displayZeroOrMany)
+        }
+
+      private val updateDescription: F[Unit] =
+        withIdPrompt { id =>
+          withReadOne(id) { todo =>
+            descriptionPrompt.flatMap { description =>
+              boundary.updateOne(todo.withUpdatedDescription(description)) >>
+                F.putSuccess("Successfully updated the description.")
+            }
+          }
+        }
+
+      private val updateDeadline: F[Unit] =
+        withIdPrompt { id =>
+          withReadOne(id) { todo =>
+            withDeadlinePrompt { deadline =>
+              boundary.updateOne(todo.withUpdatedDeadline(deadline)) >>
+                F.putSuccess("Successfully updated the deadline.")
+            }
+          }
+        }
+
+      private val exit: F[Unit] =
+        F.putStrLn("\nUntil next time!\n")
 
     }
 
