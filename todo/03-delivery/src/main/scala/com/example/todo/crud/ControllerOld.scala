@@ -88,6 +88,7 @@ object ControllerOld {
       private def descriptionPrompt: String =
         fancyConsole.getStrLnTrimmedWithPrompt("Please enter a description:")
 
+      @scala.annotation.nowarn
       private def create(): Unit =
         descriptionPrompt.pipe { description =>
           withDeadlinePrompt { deadline =>
@@ -167,7 +168,7 @@ object ControllerOld {
           .readOneById(id)
           .pipe {
             case Some(todo) => onFound(todo)
-            case None       => displayNoTodosFoundMessage
+            case None       => displayNoTodosFoundMessage()
           }
 
       private def showAll(): Unit =
@@ -175,7 +176,7 @@ object ControllerOld {
 
       private def displayZeroOrMany(todos: Vector[Todo.Existing]): Unit =
         if (todos.isEmpty)
-          displayNoTodosFoundMessage
+          displayNoTodosFoundMessage()
         else {
           val uxMatters = if (todos.size == 1) "todo" else "todos"
 
@@ -221,6 +222,7 @@ object ControllerOld {
             .pipe(displayZeroOrMany)
         }
 
+      @scala.annotation.nowarn
       private def updateDescription(): Unit =
         withIdPrompt { id =>
           withReadOne(id) { todo =>
@@ -235,6 +237,7 @@ object ControllerOld {
           }
         }
 
+      @scala.annotation.nowarn
       private def updateDeadline(): Unit =
         withIdPrompt { id =>
           withReadOne(id) { todo =>

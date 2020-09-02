@@ -109,8 +109,10 @@ object Controller {
       private val descriptionPrompt: F[String] =
         F.getStrLnTrimmedWithPrompt("Please enter a description:")
 
-      private def withDeadlinePrompt(onSuccess: LocalDateTime => F[Unit]): F[Unit] =
-        deadlinePrompt.map(toLocalDateTime).map {
+      private def withDeadlinePrompt(
+          onSuccess: LocalDateTime => F[Unit]
+        ): F[Unit] =
+        deadlinePrompt.map(toLocalDateTime).flatMap {
           case Right(deadline) => onSuccess(deadline)
           case Left(error)     => F.putError(error)
         }
