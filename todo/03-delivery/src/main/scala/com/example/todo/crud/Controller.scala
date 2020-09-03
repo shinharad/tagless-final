@@ -11,7 +11,7 @@ import cats._
 import cats.implicits._
 
 trait Controller[F[_]] {
-  def run(): F[Unit]
+  def program: F[Unit]
 }
 
 object Controller {
@@ -22,7 +22,7 @@ object Controller {
       random: Random[F]
     ): Controller[F] =
     new Controller[F] {
-      override val run: F[Unit] = {
+      override val program: F[Unit] = {
         val colors: Vector[String] =
           Vector(
             // scala.Console.BLACK,
@@ -145,6 +145,9 @@ object Controller {
           }
       }
 
+      private val idPrompt: F[String] =
+        console.getStrLnTrimmedWithPrompt("Please enter the id:")
+
       private val delete: F[Unit] =
         withIdPrompt { id =>
           withReadOne(id) { todo =>
@@ -152,9 +155,6 @@ object Controller {
               console.putSuccess("Successfully deleted the todo.")
           }
         }
-
-      private val idPrompt: F[String] =
-        console.getStrLnTrimmedWithPrompt("Please enter the id:")
 
       private def withIdPrompt(onValidId: String => F[Unit]): F[Unit] =
         idPrompt.map(toId).flatMap {
