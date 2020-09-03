@@ -9,8 +9,8 @@ object InMemoryEntityGateway {
   def dsl[F[_]: effect.Sync]: EntityGateway[F] =
     new EntityGateway[F] {
       var state: Vector[Todo.Existing] = Vector.empty
-      val nextId: F[Int] =
-        F.delay(state.size)
+      val nextId: F[String] =
+        F.delay(state.size.toString)
 
       override def writeMany(todos: Vector[Todo]): F[Vector[Todo.Existing]] =
         todos.traverse(writeOne)
@@ -23,7 +23,7 @@ object InMemoryEntityGateway {
 
       private def createOne(todo: Todo.Data): F[Todo.Existing] =
         nextId
-          .map(id => Todo.Existing(id.toString, todo))
+          .map(Todo.Existing(_, todo))
           .flatMap { created =>
             F.delay(state :+= created).as(created)
           }
