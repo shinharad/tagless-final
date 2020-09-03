@@ -8,8 +8,9 @@ import cats.implicits._
 object InMemoryEntityGateway {
   def dsl[F[_]: effect.Sync]: EntityGateway[F] =
     new EntityGateway[F] {
-      var nextId: Int = 0
       var state: Vector[Todo.Existing] = Vector.empty
+      val nextId: F[Int] =
+        F.delay(state.size)
 
       override def writeMany(todos: Vector[Todo]): F[Vector[Todo.Existing]] =
         todos.traverse(writeOne)
@@ -21,19 +22,11 @@ object InMemoryEntityGateway {
         }
 
       private def createOne(todo: Todo.Data): F[Todo.Existing] =
-        F.delay {
-          val created =
-            Todo.Existing(
-              id = nextId.toString,
-              data = todo
-            )
-
-          state :+= created
-
-          nextId += 1
-
-          created
-        }
+        nextId
+          .map(id => Todo.Existing(id.toString, todo))
+          .flatMap { created =>
+            F.delay(state :+= created).as(created)
+          }
 
       private def updateOne(todo: Todo.Existing): F[Todo.Existing] =
         F.delay {
