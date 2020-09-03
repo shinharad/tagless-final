@@ -6,6 +6,8 @@ import java.time.format.DateTimeFormatter
 
 import cats._
 
+import cats.effect.concurrent.Ref
+
 object DependencyGraph {
   def dsl[F[_]: effect.Sync](
       pattern: DateTimeFormatter,
@@ -15,7 +17,7 @@ object DependencyGraph {
     Controller.dsl(
       pattern = pattern,
       boundary = Boundary.dsl[F](
-        gateway = InMemoryEntityGateway.dsl
+        gateway = InMemoryEntityGateway.dsl(Ref.of(Vector.empty))
       ),
       console = FancyConsole.dsl(console),
       random = random
