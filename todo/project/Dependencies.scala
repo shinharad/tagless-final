@@ -15,6 +15,23 @@ object Dependencies {
     }
   }
 
+  case object dev {
+    case object zio {
+      val zio =
+        "dev.zio" %% "zio" % "1.0.0-RC21-2"
+
+      val `zio-interop-cats` =
+        "dev.zio" %% "zio-interop-cats" % "2.1.3.0-RC16"
+    }
+  }
+
+  case object io {
+    case object monix {
+      val `monix-eval` =
+        "io.monix" %% "monix-eval" % "3.2.2"
+    }
+  }
+
   case object org {
     case object augustjune {
       val `context-applied` =

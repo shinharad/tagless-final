@@ -1,4 +1,5 @@
 import Dependencies._
+import Dependencies.io
 import Util._
 
 ThisBuild / organization := "com.myorganization"
@@ -11,7 +12,6 @@ ThisBuild / scalacOptions ++= Seq(
   "-language:_",
   "-unchecked",
   "Wvalue-discard",
-  // "-Wunused:_",
   "-Xfatal-warnings",
   "-Ymacro-annotations"
 )
@@ -94,6 +94,13 @@ lazy val main =
     .dependsOn(delivery % Cctt)
     .dependsOn(persistence % Cctt)
     .settings(commonSettings: _*)
+    .settings(
+      libraryDependencies ++= Seq(
+        dev.zio.zio,
+        dev.zio.`zio-interop-cats`,
+        io.monix.`monix-eval`
+      )
+    )
 
 lazy val commonSettings = Seq(
   addCompilerPlugin(com.olegpy.`better-monadic-for`),
