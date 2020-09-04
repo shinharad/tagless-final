@@ -17,40 +17,42 @@ trait Ref[F[_], A] {
 
 object Ref {
   def of[F[_]: Sync, A](a: A) =
-    new Ref[F, A] {
-      private[this] val state: AtomicReference[A] =
-        new AtomicReference(a)
+    F.delay {
+      new Ref[F, A] {
+        private[this] val state: AtomicReference[A] =
+          new AtomicReference(a)
 
-      override def get: F[A] =
-        F.delay(state.get)
+        override def get: F[A] =
+          F.delay(state.get)
 
-      override def set(a: A): F[Unit] =
-        F.delay(state.set(a))
+        override def set(a: A): F[Unit] =
+          F.delay(state.set(a))
 
-      override def update(aa: A => A): F[Unit] =
-        updateAndGet(aa).void
+        override def update(aa: A => A): F[Unit] =
+          updateAndGet(aa).void
 
-      override def updateAndGet(aa: A => A): F[A] =
-        modify { a =>
-          val desiredState = aa(a)
-          val result = desiredState
+        override def updateAndGet(aa: A => A): F[A] =
+          modify { a =>
+            val desiredState = aa(a)
+            val result = desiredState
 
-          desiredState -> result
+            desiredState -> result
+          }
+
+        override def modify[B](aab: A => (A, B)): F[B] = {
+          @scala.annotation.tailrec
+          def setOrDieTrying: B = {
+            val currentState = state.get
+            val (desiredState, result) = aab(currentState)
+
+            if (state.compareAndSet(currentState, desiredState))
+              result
+            else
+              setOrDieTrying
+          }
+
+          F.delay(setOrDieTrying)
         }
-
-      override def modify[B](aab: A => (A, B)): F[B] = {
-        @scala.annotation.tailrec
-        def setOrDieTrying: B = {
-          val currentState = state.get
-          val (desiredState, result) = aab(currentState)
-
-          if (state.compareAndSet(currentState, desiredState))
-            result
-          else
-            setOrDieTrying
-        }
-
-        F.delay(setOrDieTrying)
       }
     }
 }

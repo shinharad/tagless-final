@@ -5,6 +5,7 @@ package crud
 import java.time.format.DateTimeFormatter
 
 import cats._
+import cats.implicits._
 
 import cats.effect.concurrent.Ref
 
@@ -13,13 +14,15 @@ object DependencyGraph {
       pattern: DateTimeFormatter,
       console: Console[F],
       random: Random[F]
-    ): Controller[F] =
-    Controller.dsl(
-      pattern = pattern,
-      boundary = Boundary.dsl[F](
-        gateway = InMemoryEntityGateway.dsl(Ref.of(Vector.empty))
-      ),
-      console = FancyConsole.dsl(console),
-      random = random
-    )
+    ): F[Controller[F]] =
+    Ref.of(Vector.empty[Todo.Existing]).map { state =>
+      Controller.dsl(
+        pattern = pattern,
+        boundary = Boundary.dsl[F](
+          gateway = InMemoryEntityGateway.dsl(state)
+        ),
+        console = FancyConsole.dsl(console),
+        random = random
+      )
+    }
 }
