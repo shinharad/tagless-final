@@ -48,10 +48,13 @@ lazy val domain =
 lazy val core =
   project
     .in(file("02-core"))
-    .dependsOn(`cats-core` % Cctt)
+    // .dependsOn(`cats-core` % Cctt)
     .dependsOn(domain % Cctt)
     .settings(commonSettings: _*)
     .settings(
+      libraryDependencies ++= Seq(
+        org.typelevel.`cats-core`
+      ),
       libraryDependencies ++= Seq(
         com.github.alexarchambault.`scalacheck-shapeless_1.14`,
         org.scalacheck.scalacheck,
@@ -65,15 +68,25 @@ lazy val delivery =
   project
     .in(file("03-delivery"))
     .dependsOn(core % Cctt)
-    .dependsOn(`cats-effect` % Cctt)
+    // .dependsOn(`cats-effect` % Cctt)
     .settings(commonSettings: _*)
+    .settings(
+      libraryDependencies ++= Seq(
+        org.typelevel.`cats-effect`
+      )
+    )
 
 lazy val persistence =
   project
     .in(file("03-persistence"))
     .dependsOn(core % Cctt)
-    .dependsOn(`cats-effect` % Cctt)
+    // .dependsOn(`cats-effect` % Cctt)
     .settings(commonSettings: _*)
+    .settings(
+      libraryDependencies ++= Seq(
+        org.typelevel.`cats-effect`
+      )
+    )
 
 lazy val main =
   project
