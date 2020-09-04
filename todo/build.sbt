@@ -83,6 +83,7 @@ lazy val main =
     .settings(commonSettings: _*)
 
 lazy val commonSettings = Seq(
+  addCompilerPlugin(com.olegpy.`better-monadic-for`),
   addCompilerPlugin(org.augustjune.`context-applied`),
   addCompilerPlugin(org.typelevel.`kind-projector`),
   Compile / console / scalacOptions --= Seq(

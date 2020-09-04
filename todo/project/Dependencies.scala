@@ -8,6 +8,11 @@ object Dependencies {
           "com.github.alexarchambault" %% "scalacheck-shapeless_1.14" % "1.2.5"
       }
     }
+
+    case object olegpy {
+      val `better-monadic-for` =
+        "com.olegpy" %% "better-monadic-for" % "0.3.1"
+    }
   }
 
   case object org {
