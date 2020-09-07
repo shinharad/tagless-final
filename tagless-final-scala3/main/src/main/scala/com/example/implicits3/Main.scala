@@ -1,7 +1,7 @@
 package com.example
 package implicits3
 
-import fplibrary._
+import fplibrary.{ given _, _ }
 
 object Main extends App {
   println("─" * 100)
