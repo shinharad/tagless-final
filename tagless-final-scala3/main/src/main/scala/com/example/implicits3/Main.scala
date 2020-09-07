@@ -7,7 +7,7 @@ object Main extends App {
   println("─" * 100)
 
   val dsl: Applicative[Maybe] =
-    implicitly[Applicative[Maybe]]
+    summon[Applicative[Maybe]]
 
   val maybe: Maybe[Int] =
     dsl.pure(1337)
