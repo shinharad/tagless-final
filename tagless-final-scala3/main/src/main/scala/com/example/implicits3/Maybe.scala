@@ -13,7 +13,7 @@ object Maybe {
       override def pure[A](a: A): Maybe[A] =
         Maybe.Just(a)
 
-      override def map[A, B](fa: Maybe[A])(ab: A => B): Maybe[B] =
+      override def [A, B](fa: Maybe[A])map(ab: A => B): Maybe[B] =
         fa match {
           case Just(a) => pure(ab(a))
           case Nothing => Nothing

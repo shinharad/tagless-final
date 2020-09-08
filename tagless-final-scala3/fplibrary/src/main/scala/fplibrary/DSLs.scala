@@ -1,19 +1,14 @@
 package fplibrary
 
 trait Functor[F[_]] {
-  def map[A, B](fa: F[A])(ab: A => B): F[B]
+  def [A, B](fa: F[A])map(ab: A => B): F[B]
 }
 
 trait Applicative[F[_]] extends Functor[F] {
   def pure[A](a: A): F[A]
 }
 
-given FunctorOps[F[_]] as AnyRef {
-  def [A, B](fa: F[A])map(ab: A => B)(using Functor[F]): F[B] =
-    summon[Functor[F]].map(fa)(ab)
-}
-
-given ApplicativeOps[A] as AnyRef {
+given [A] as AnyRef {
   def [F[_]: Applicative](a: A).pure: F[A] =
     summon[Applicative[F]].pure(a)
 }
