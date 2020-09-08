@@ -52,3 +52,21 @@ object Main extends App:
   // println(program4(1337, "hello world")(implicitly[DSL1[Maybe]], implicitly[DSL2[Maybe]], implicitly[Applicative[Maybe]]))
 
   println("─" * 100)
+
+  // Context Functions
+  def program5[F[_]](a: Int, b: String): (DSL1[F], DSL2[F], Applicative[F]) ?=> F[(Int, String)] =
+    (a, b).pure
+
+  type Common[F[_], A] = (DSL1[F], DSL2[F], Applicative[F]) ?=> F[A]
+
+  def program6[F[_]](a: Int, b: String): Common[F, (Int, String)] =
+    (a, b).pure
+
+  def program7[F[_]](a: Int, b: String)(using Applicative[F]): Common[F, (Int, String)] =
+    (a, b).pure
+
+  println(program5[Maybe](1337, "hello world"))
+  println(program6[Maybe](1337, "hello world"))
+  println(program7[Maybe](1337, "hello world"))
+
+  println("─" * 100)
