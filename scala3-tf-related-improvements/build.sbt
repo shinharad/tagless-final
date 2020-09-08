@@ -20,7 +20,7 @@ ThisBuild / scalacOptions ++= Seq(
   "-Ykind-projector"
 )
 
-lazy val `tagless-final-scala3` =
+lazy val `scala3-tf-related-improvements` =
   project
     .in(file("."))
     .settings(commonSettings: _*)
