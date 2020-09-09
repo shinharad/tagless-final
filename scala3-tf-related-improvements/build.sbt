@@ -1,8 +1,7 @@
 import Dependencies._
 import Util._
 
-val dottyVersion = "0.23.0"
-// val dottyVersion = "0.26.0-RC1"
+val dottyVersion = "0.26.0-RC1"
 val scala213Version = "2.13.3"
 
 ThisBuild / organization := "com.example"
