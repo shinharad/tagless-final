@@ -24,7 +24,7 @@ object Evaluate {
   }
 
   object Addition {
-    def dsl[F[_]: Apply: NonEmptyParallel]: Addition[F, Int] =
+    def dsl[F[_]: NonEmptyParallel]: Addition[F, Int] =
       new Addition[F, Int] {
         override def add(a1: F[Int], a2: F[Int]): F[Int] =
           (a1, a2).parMapN(_ + _)
@@ -32,7 +32,7 @@ object Evaluate {
   }
 
   object Multiplication {
-    def dsl[F[_]: Apply: NonEmptyParallel]: Multiplication[F, Int] =
+    def dsl[F[_]: NonEmptyParallel]: Multiplication[F, Int] =
       new Multiplication[F, Int] {
         override def multiply(a1: F[Int], a2: F[Int]): F[Int] =
           (a1, a2).parMapN(_ * _)
