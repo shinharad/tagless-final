@@ -2,6 +2,7 @@ package com.example
 package todo
 package crud
 
+import java.time.LocalDateTime
 import java.util.UUID
 
 import skunk._
@@ -33,15 +34,15 @@ object Statement {
   object Insert {
     val one: Query[Todo.Data, Todo.Existing] =
       sql"""
-            INSERT INTO todo (description, deadline)
-            VALUES (${Todo.Data.codec})
+              INSERT INTO todo (description, deadline)
+              VALUES (${Todo.Data.codec})
             RETURNING *
         """.query(Todo.Existing.codec)
 
     def many(size: Int): Query[List[Todo.Data], Todo.Existing] =
       sql"""
-            INSERT INTO todo (description, deadline)
-            VALUES (${Todo.Data.codec.list(size)})
+              INSERT INTO todo (description, deadline)
+              VALUES (${Todo.Data.codec.list(size)})
             RETURNING *
         """.query(Todo.Existing.codec)
 
@@ -58,6 +59,28 @@ object Statement {
             VALUES (${Todo.Existing.codec.list(size)})
         """.command
     }
+  }
+
+  object Update {
+    val one: Query[Todo.Existing, Todo.Existing] =
+      sql"""
+              UPDATE todo
+                SET descritpion = $text, deadline = $timestamp
+               WHERE id = ${uuid.string}
+            RETURNING *
+         """.query(Todo.Existing.codec).contramap(toTwiddle)
+
+    object Command {
+      val one: Command[Todo.Existing] =
+        sql"""
+              UPDATE todo
+                SET descritpion = $text, deadline = $timestamp
+               WHERE id = ${uuid.string}
+         """.command.contramap(toTwiddle)
+    }
+
+    private def toTwiddle(e: Todo.Existing): String ~ LocalDateTime ~ String =
+      e.data.description ~ e.data.deadline ~ e.id
   }
 
   object Select {
