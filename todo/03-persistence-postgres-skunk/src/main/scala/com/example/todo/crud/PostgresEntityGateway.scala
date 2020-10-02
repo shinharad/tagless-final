@@ -11,10 +11,15 @@ object PostgresEntityGateway {
   //     resource: effect.Resource[F, skunk.Session[F]]
   //   ): EntityGateway[F] =
 
-  def dsl[F[_]](
+  // def dsl[F[_]](
+  //     resource: effect.Resource[F, skunk.Session[F]]
+  //   )(implicit
+  //     C: fs2.Stream.Compiler[F, F],
+  //     B: effect.Bracket[F, Throwable]
+  //   ): EntityGateway[F] =
+
+  def dsl[F[_]: effect.Sync](
       resource: effect.Resource[F, skunk.Session[F]]
-    )(implicit
-      B: effect.Bracket[F, Throwable]
     ): EntityGateway[F] =
     new EntityGateway[F] {
       override def writeMany(todos: Vector[Todo]): F[Vector[Todo.Existing]] =
