@@ -7,7 +7,7 @@ import cats.implicits._
 
 object PostgresEntityGateway {
 
-  def dsl[F[_]: effect.Sync: UUIDGenerator](
+  def dsl[F[_]: effect.Sync](
       resource: effect.Resource[F, skunk.Session[F]]
     ): F[EntityGateway[F]] =
     F.delay {

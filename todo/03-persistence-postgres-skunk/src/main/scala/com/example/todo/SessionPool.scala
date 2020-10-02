@@ -8,7 +8,6 @@ import cats.effect._
 import skunk._
 
 object SessionPool {
-  // def dsl[F[_]]: Resource[F, Resource[F, skunk.Session[F]]] = ???
   def dsl[F[_]: Concurrent: ContextShift: natchez.Trace]: SessionPool[F] =
     Session.pooled(
       host = "localhost",
