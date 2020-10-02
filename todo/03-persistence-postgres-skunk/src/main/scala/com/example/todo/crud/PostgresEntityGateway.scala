@@ -7,17 +7,6 @@ import cats.implicits._
 
 object PostgresEntityGateway {
 
-  // def dsl[F[_]: effect.Bracket[*[_], Throwable]](
-  //     resource: effect.Resource[F, skunk.Session[F]]
-  //   ): EntityGateway[F] =
-
-  // def dsl[F[_]](
-  //     resource: effect.Resource[F, skunk.Session[F]]
-  //   )(implicit
-  //     C: fs2.Stream.Compiler[F, F],
-  //     B: effect.Bracket[F, Throwable]
-  //   ): EntityGateway[F] =
-
   def dsl[F[_]: effect.Sync: UUIDGenerator](
       resource: effect.Resource[F, skunk.Session[F]]
     ): F[EntityGateway[F]] =
@@ -33,20 +22,6 @@ object PostgresEntityGateway {
                     preparedQuery.unique(insert)
                   }
               }
-
-            // F.genUUID
-            //   .map(id => Todo.Existing(id.toString, insert))
-            //   .flatMap { e =>
-            //     resource.use { session =>
-            //       session
-            //         .prepare(Statement.Insert.WithUUID.one)
-            //         .use { preparedCommand =>
-            //           preparedCommand
-            //             .execute(e)
-            //             .as(e)
-            //         }
-            //     }
-            //   }
 
             case update: Todo.Existing =>
               resource.use { session =>
