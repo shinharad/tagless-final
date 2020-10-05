@@ -32,8 +32,3 @@ object Main extends App {
   private def inColor(line: String)(color: String): String =
     color + line + scala.Console.RESET
 }
-
-// object Main extends IOApp {
-//   override def run(args: List[String]): IO[ExitCode] =
-//     Program.dsl[IO].as(ExitCode.Success)
-// }
