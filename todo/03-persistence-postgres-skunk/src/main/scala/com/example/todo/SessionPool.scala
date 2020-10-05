@@ -16,6 +16,6 @@ object SessionPool {
       password = "password".some,
       database = "tagless-final-todo",
       max = 10,
-      debug = true
+      debug = false
     )
 }

@@ -45,28 +45,28 @@ object Dependencies {
 
     case object scalatest {
       val scalatest =
-        "org.scalatest" %% "scalatest" % "3.1.2"
+        "org.scalatest" %% "scalatest" % "3.2.2"
     }
 
     case object scalatestplus {
       val `scalacheck-1-14` =
-        "org.scalatestplus" %% "scalacheck-1-14" % "3.1.2.0"
+        "org.scalatestplus" %% "scalacheck-1-14" % "3.2.2.0"
     }
 
     case object tpolecat {
       val `skunk-core` =
-        "org.tpolecat" %% "skunk-core" % "0.0.11"
+        "org.tpolecat" %% "skunk-core" % "0.0.21"
     }
 
     case object typelevel {
       val `cats-core` =
-        "org.typelevel" %% "cats-core" % "2.1.1"
+        "org.typelevel" %% "cats-core" % "2.2.0"
 
       val `cats-effect` =
-        "org.typelevel" %% "cats-effect" % "2.1.3"
+        "org.typelevel" %% "cats-effect" % "2.2.0"
 
       val `discipline-scalatest` =
-        "org.typelevel" %% "discipline-scalatest" % "1.0.1"
+        "org.typelevel" %% "discipline-scalatest" % "2.0.1"
 
       val `kind-projector` =
         "org.typelevel" %% "kind-projector" % "0.11.0" cross CrossVersion.full

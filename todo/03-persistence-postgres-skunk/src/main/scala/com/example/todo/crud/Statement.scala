@@ -34,39 +34,39 @@ object Statement {
   object Insert {
     val one: Query[Todo.Data, Todo.Existing] =
       sql"""
-              INSERT INTO todo (description, deadline)
-              VALUES (${Todo.Data.codec})
+               INSERT INTO todo (description, deadline)
+               VALUES (${Todo.Data.codec})
             RETURNING *
-        """.query(Todo.Existing.codec)
+         """.query(Todo.Existing.codec)
 
     def many(size: Int): Query[List[Todo.Data], Todo.Existing] =
       sql"""
-              INSERT INTO todo (description, deadline)
-              VALUES (${Todo.Data.codec.list(size)})
+               INSERT INTO todo (description, deadline)
+               VALUES (${Todo.Data.codec.list(size)})
             RETURNING *
-        """.query(Todo.Existing.codec)
+         """.query(Todo.Existing.codec)
 
     object WithUUID {
       val one: Command[Todo.Existing] =
         sql"""
-            INSERT INTO todo (description, deadline)
-            VALUES (${Todo.Existing.codec})
-        """.command
+              INSERT INTO todo (description, deadline)
+              VALUES (${Todo.Existing.codec})
+           """.command
 
       def many(size: Int): Command[List[Todo.Existing]] =
         sql"""
-            INSERT INTO todo (description, deadline)
-            VALUES (${Todo.Existing.codec.list(size)})
-        """.command
+              INSERT INTO todo (description, deadline)
+              VALUES (${Todo.Existing.codec.list(size)})
+           """.command
     }
   }
 
   object Update {
     val one: Query[Todo.Existing, Todo.Existing] =
       sql"""
-              UPDATE todo
-                SET descritpion = $text, deadline = $timestamp
-               WHERE id = ${uuid.string}
+               UPDATE todo
+                  SET description = $text, deadline = $timestamp
+                WHERE id = ${uuid.string}
             RETURNING *
          """.query(Todo.Existing.codec).contramap(toTwiddle)
 
@@ -74,9 +74,9 @@ object Statement {
       val one: Command[Todo.Existing] =
         sql"""
               UPDATE todo
-                SET descritpion = $text, deadline = $timestamp
+                 SET description = $text, deadline = $timestamp
                WHERE id = ${uuid.string}
-         """.command.contramap(toTwiddle)
+           """.command.contramap(toTwiddle)
     }
 
     private def toTwiddle(e: Todo.Existing): String ~ LocalDateTime ~ String =
@@ -88,21 +88,21 @@ object Statement {
       sql"""
             SELECT *
               FROM todo
-        """.query(Todo.Existing.codec)
+         """.query(Todo.Existing.codec)
 
     def many(size: Int): Query[List[String], Todo.Existing] =
       sql"""
             SELECT *
               FROM todo
              WHERE id IN (${uuid.string.list(size)})
-        """.query(Todo.Existing.codec)
+         """.query(Todo.Existing.codec)
 
     val byDescription: Query[String, Todo.Existing] =
       sql"""
             SELECT *
               FROM todo
              WHERE description ~ $text
-        """.query(Todo.Existing.codec)
+         """.query(Todo.Existing.codec)
   }
 
   object Delete {
@@ -110,14 +110,15 @@ object Statement {
       sql"""
             DELETE
               FROM todo
-        """.command
+         """.command
 
     def many(size: Int): Command[List[String]] =
       sql"""
             DELETE
               FROM todo
-              WHERE id IN (${uuid.string.list(size)})
-        """.command
+             WHERE id IN (${uuid.string.list(size)})
+         """.command
 
   }
+
 }

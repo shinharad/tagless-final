@@ -6,7 +6,6 @@ import cats._
 import cats.implicits._
 
 object PostgresEntityGateway {
-
   def dsl[F[_]: effect.Sync](
       resource: effect.Resource[F, skunk.Session[F]]
     ): F[EntityGateway[F]] =
@@ -61,7 +60,7 @@ object PostgresEntityGateway {
               }
           }
 
-        override def readAll: F[Vector[Todo.Existing]] =
+        override val readAll: F[Vector[Todo.Existing]] =
           resource.use { session =>
             session
               .execute(Statement.Select.all)
@@ -79,17 +78,15 @@ object PostgresEntityGateway {
               }
           }
 
-        override def deleteAll: F[Unit] =
+        override val deleteAll: F[Unit] =
           resource.use { session =>
             session
               .execute(Statement.Delete.all)
               .void
           }
-
       }
     }
 
   private val ChunkSizeInBytes: Int =
     1024
-
 }
