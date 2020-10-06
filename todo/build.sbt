@@ -25,10 +25,13 @@ lazy val `todo` =
       domain,
       core,
       delivery,
+      `delivery-http-http4s`,
       persistence,
       `persistence-postgres-skunk`,
       main,
-      `main-postgres-skunk`
+      `main-http-http4s`,
+      `main-postgres-skunk`,
+      `main-http-http4s-postgres-skunk`
     )
 
 lazy val `cats-core` =
@@ -78,6 +81,17 @@ lazy val delivery =
       )
     )
 
+lazy val `delivery-http-http4s` =
+  project
+    .in(file("03-delivery-http-http4s"))
+    .dependsOn(core % Cctt)
+    .settings(commonSettings: _*)
+    .settings(
+      libraryDependencies ++= Seq(
+        org.typelevel.`cats-effect`
+      )
+    )
+
 lazy val persistence =
   project
     .in(file("03-persistence"))
@@ -108,13 +122,15 @@ lazy val main =
     .dependsOn(delivery % Cctt)
     .dependsOn(persistence % Cctt)
     .settings(commonSettings: _*)
-    .settings(
-      libraryDependencies ++= Seq(
-        dev.zio.zio,
-        dev.zio.`zio-interop-cats`,
-        io.monix.`monix-eval`
-      )
-    )
+    .settings(libraryDependencies ++= effects)
+
+lazy val `main-http-http4s` =
+  project
+    .in(file("04-main-http-http4s"))
+    .dependsOn(`delivery-http-http4s` % Cctt)
+    .dependsOn(persistence % Cctt)
+    .settings(commonSettings: _*)
+    .settings(libraryDependencies ++= effects)
 
 lazy val `main-postgres-skunk` =
   project
@@ -122,22 +138,32 @@ lazy val `main-postgres-skunk` =
     .dependsOn(delivery % Cctt)
     .dependsOn(`persistence-postgres-skunk` % Cctt)
     .settings(commonSettings: _*)
-    .settings(
-      libraryDependencies ++= Seq(
-        dev.zio.zio,
-        dev.zio.`zio-interop-cats`,
-        io.monix.`monix-eval`
-      )
-    )
+    .settings(libraryDependencies ++= effects)
+
+lazy val `main-http-http4s-postgres-skunk` =
+  project
+    .in(file("04-main-http-http4s-postgres-skunk"))
+    .dependsOn(`delivery-http-http4s` % Cctt)
+    .dependsOn(`persistence-postgres-skunk` % Cctt)
+    .settings(commonSettings: _*)
+    .settings(libraryDependencies ++= effects)
 
 lazy val commonSettings = Seq(
   addCompilerPlugin(com.olegpy.`better-monadic-for`),
   addCompilerPlugin(org.augustjune.`context-applied`),
   addCompilerPlugin(org.typelevel.`kind-projector`),
+  update / evictionWarningOptions := EvictionWarningOptions.empty,
   Compile / console / scalacOptions --= Seq(
     "-Wunused:_",
     "-Xfatal-warnings"
   ),
   Test / console / scalacOptions :=
     (Compile / console / scalacOptions).value
+)
+
+lazy val effects = Seq(
+  dev.zio.`zio-interop-cats`,
+  dev.zio.zio,
+  io.monix.`monix-eval`,
+  org.typelevel.`cats-effect`
 )
