@@ -8,18 +8,22 @@ import cats.data._
 import cats.implicits._
 
 import cats.effect._
+import scala.concurrent._
 
 object Program {
-  def dsl[F[_]: Concurrent: ContextShift: natchez.Trace]: F[Unit] =
+  def dsl[F[_]: ContextShift: ConcurrentEffect: Timer: natchez.Trace](
+      executionContext: ExecutionContext
+    ): F[Unit] =
     SessionPool.dsl.use { resource =>
       for {
         controller <- crud.DependencyGraph.dsl(Pattern, resource)
-        httpApp = HttpApp.dsl(
-          NonEmptyChain(
-            controller.routes
+        server <- Server.dsl(executionContext)(
+          HttpApp.dsl(
+            NonEmptyChain(
+              controller.routes
+            )
           )
         )
-        server <- Server.dsl
         _ <- server.serve
       } yield ()
     }

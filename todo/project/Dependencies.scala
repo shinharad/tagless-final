@@ -39,6 +39,9 @@ object Dependencies {
     }
 
     case object http4s {
+      val `http4s-blaze-server` =
+        dependency("blaze-server")
+
       val `http4s-dsl` =
         dependency("dsl")
 
