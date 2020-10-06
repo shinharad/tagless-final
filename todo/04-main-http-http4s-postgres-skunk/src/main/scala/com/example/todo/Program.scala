@@ -12,6 +12,7 @@ object Program {
   def dsl[F[_]: Concurrent: ContextShift: natchez.Trace]: F[Unit] =
     SessionPool.dsl.use { resource =>
       for {
+        controller <- crud.DependencyGraph.dsl(Pattern, resource)
         server <- Server.dsl
         _ <- server.serve
       } yield ()

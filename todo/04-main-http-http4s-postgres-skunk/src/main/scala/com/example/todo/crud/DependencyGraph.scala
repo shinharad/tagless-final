@@ -1,5 +1,3 @@
-package com.example.todo.crud
-
 package com.example
 package todo
 package crud
