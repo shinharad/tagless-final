@@ -88,6 +88,7 @@ lazy val `delivery-http-http4s` =
     .settings(commonSettings: _*)
     .settings(
       libraryDependencies ++= Seq(
+        org.http4s.`http4s-dsl`,
         org.typelevel.`cats-effect`
       )
     )

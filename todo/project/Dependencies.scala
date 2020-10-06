@@ -38,6 +38,14 @@ object Dependencies {
         "org.augustjune" %% "context-applied" % "0.1.4"
     }
 
+    case object http4s {
+      val `http4s-dsl` =
+        dependency("dsl")
+
+      private def dependency(artifact: String): ModuleID =
+        "org.http4s" %% s"http4s-$artifact" % "0.21.7"
+    }
+
     case object scalacheck {
       val scalacheck =
         "org.scalacheck" %% "scalacheck" % "1.14.3"
