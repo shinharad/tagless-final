@@ -15,9 +15,7 @@ object Main extends App {
       import cats.effect._
 
       implicit val cs: ContextShift[IO] = IO.contextShift(executionContext)
-
-      implicit val timer: Timer[IO] =
-        IO.timer(executionContext)
+      implicit val timer: Timer[IO] = IO.timer(executionContext)
 
       Program.dsl[cats.effect.IO](executionContext).unsafeRunSync()
 

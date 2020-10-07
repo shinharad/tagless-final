@@ -64,6 +64,11 @@ object Dependencies {
         "org.scalatestplus" %% "scalacheck-1-14" % "3.2.2.0"
     }
 
+    case object slf4j {
+      val `slf4j-simple` =
+        "org.slf4j" % "slf4j-simple" % "1.7.30"
+    }
+
     case object tpolecat {
       val `skunk-core` =
         "org.tpolecat" %% "skunk-core" % "0.0.21"

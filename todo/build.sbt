@@ -133,6 +133,11 @@ lazy val `main-http-http4s` =
     .dependsOn(persistence % Cctt)
     .settings(commonSettings: _*)
     .settings(libraryDependencies ++= effects)
+    .settings(
+      libraryDependencies ++= Seq(
+        org.slf4j.`slf4j-simple`
+      )
+    )
 
 lazy val `main-postgres-skunk` =
   project
@@ -149,6 +154,11 @@ lazy val `main-http-http4s-postgres-skunk` =
     .dependsOn(`persistence-postgres-skunk` % Cctt)
     .settings(commonSettings: _*)
     .settings(libraryDependencies ++= effects)
+    .settings(
+      libraryDependencies ++= Seq(
+        org.slf4j.`slf4j-simple`
+      )
+    )
 
 lazy val commonSettings = Seq(
   addCompilerPlugin(com.olegpy.`better-monadic-for`),
