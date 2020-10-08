@@ -4,7 +4,6 @@ package todo
 import scala.util.chaining._
 
 import cats._
-import cats.data._
 import cats.implicits._
 
 import org.http4s._
@@ -14,9 +13,11 @@ import org.http4s.server.middleware.Logger
 
 object HttpApp {
   def dsl[F[_]: effect.Concurrent](
-      routes: NonEmptyChain[HttpRoutes[F]]
+      first: Controller[F],
+      remaining: Controller[F]*
     ): HttpApp[F] =
-    routes
+    (first +: remaining)
+      .map(_.routes)
       .reduceLeft(_ <+> _)
       .pipe(routes => Router("api" -> routes))
       .orNotFound

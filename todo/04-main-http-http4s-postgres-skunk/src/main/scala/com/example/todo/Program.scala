@@ -19,9 +19,7 @@ object Program {
         controller <- crud.DependencyGraph.dsl(Pattern, resource)
         server <- Server.dsl(executionContext)(
           HttpApp.dsl(
-            NonEmptyChain(
-              controller.routes
-            )
+            controller
           )
         )
         _ <- server.serve
