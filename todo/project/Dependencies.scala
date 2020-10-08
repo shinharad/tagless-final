@@ -26,6 +26,14 @@ object Dependencies {
   }
 
   case object io {
+    case object circe {
+      val `circe-generic` =
+        dependency("generic")
+
+      private def dependency(artifact: String): ModuleID =
+        "io.circe" %% s"circe-$artifact" % "0.13.0"
+    }
+
     case object monix {
       val `monix-eval` =
         "io.monix" %% "monix-eval" % "3.2.2"
@@ -44,6 +52,9 @@ object Dependencies {
 
       val `http4s-dsl` =
         dependency("dsl")
+
+      val `http4s-circe` =
+        dependency("circe")
 
       private def dependency(artifact: String): ModuleID =
         "org.http4s" %% s"http4s-$artifact" % "0.21.7"

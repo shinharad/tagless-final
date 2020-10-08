@@ -88,7 +88,9 @@ lazy val `delivery-http-http4s` =
     .settings(commonSettings: _*)
     .settings(
       libraryDependencies ++= Seq(
+        io.circe.`circe-generic`,
         org.http4s.`http4s-blaze-server`,
+        org.http4s.`http4s-circe`,
         org.http4s.`http4s-dsl`,
         org.typelevel.`cats-effect`
       )
