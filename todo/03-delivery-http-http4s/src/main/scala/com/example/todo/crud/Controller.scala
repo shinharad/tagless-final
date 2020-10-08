@@ -27,16 +27,20 @@ object Controller {
     new Controller[F] with Http4sDsl[F] {
       override def routes: HttpRoutes[F] =
         HttpRoutes.of {
-          case GET -> Root / "todos" => showAll
+          case GET -> Root / "todos"    => showAll
+          case DELETE -> Root / "todos" => deleteAll
         }
 
       private val showAll: F[Response[F]] =
         boundary.readAll.flatMap { todos =>
           todos
-          .sortBy(_.deadline)
-          .map(response.Todo(pattern))
-          .asJson
-          .pipe(Ok(_))
+            .sortBy(_.deadline)
+            .map(response.Todo(pattern))
+            .asJson
+            .pipe(Ok(_))
         }
+
+      private val deleteAll: F[Response[F]] =
+        boundary.deleteAll >> NoContent()
     }
 }
