@@ -10,6 +10,7 @@ import cats.implicits._
 import org.http4s._
 import org.http4s.implicits._
 import org.http4s.server.Router
+import org.http4s.server.middleware.Logger
 
 object HttpApp {
   def dsl[F[_]: effect.Concurrent](
@@ -19,4 +20,5 @@ object HttpApp {
       .reduceLeft(_ <+> _)
       .pipe(routes => Router("api" -> routes))
       .orNotFound
+      .pipe(Logger.httpApp(logHeaders = true, logBody = true))
 }
