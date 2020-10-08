@@ -14,6 +14,7 @@ import io.circe.syntax._
 import org.http4s._
 import org.http4s.circe._
 import org.http4s.dsl.Http4sDsl
+import org.http4s.server.Router
 
 trait Controller[F[_]] {
   def routes: HttpRoutes[F]
@@ -26,9 +27,11 @@ object Controller {
     ): Controller[F] =
     new Controller[F] with Http4sDsl[F] {
       override def routes: HttpRoutes[F] =
-        HttpRoutes.of {
-          case GET -> Root / "todos"    => showAll
-          case DELETE -> Root / "todos" => deleteAll
+        Router {
+          "todos" -> HttpRoutes.of {
+            case GET -> Root    => showAll
+            case DELETE -> Root => deleteAll
+          }
         }
 
       private val showAll: F[Response[F]] =
