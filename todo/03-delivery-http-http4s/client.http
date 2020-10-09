@@ -5,3 +5,15 @@ GET {{endpoint}}
 
 ### Delete all
 DELETE {{endpoint}}
+
+### Delete (no todos found)
+DELETE {{endpoint}}/396ebe2c-c230-40a0-80ec-f0cb40915e53
+
+### Delete (invalid)
+DELETE {{endpoint}}/396ebe2c-c230- 40a0-80ec-f0cb40915e53
+
+### Delete (blows up)
+DELETE {{endpoint}}/bla
+
+### Delete (the one that works)
+DELETE {{endpoint}}/396ebe2c-c230-40a0-80ec-f0cb40915e52

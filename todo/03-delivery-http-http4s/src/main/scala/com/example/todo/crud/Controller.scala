@@ -25,8 +25,9 @@ object Controller {
       override def routes: HttpRoutes[F] =
         Router {
           "todos" -> HttpRoutes.of {
-            case GET -> Root    => showAll
-            case DELETE -> Root => deleteAll
+            case GET -> Root         => showAll
+            case DELETE -> Root      => deleteAll
+            case DELETE -> Root / id => delete(id)
           }
         }
 
@@ -38,6 +39,44 @@ object Controller {
             .asJson
             .pipe(Ok(_))
         }
+
+      private def delete(id: String): F[Response[F]] =
+        withIdPrompt(id) { id =>
+          withReadOne(id) { todo =>
+            boundary.deleteOne(todo) >> NoContent()
+          }
+        }
+
+      private def withIdPrompt(
+          id: String
+        )(
+          onValidId: String => F[Response[F]]
+        ): F[Response[F]] =
+        id.pipe(toId).pipe {
+          case Right(id)   => onValidId(id)
+          case Left(error) => BadRequest(error)
+        }
+
+      private def toId(userInput: String): Either[String, String] =
+        if (userInput.isEmpty || userInput.contains(" "))
+          Left(s"\n$userInput is not a valid id.")
+        else
+          Right(userInput)
+
+      private def withReadOne(
+          id: String
+        )(
+          onFound: Todo.Existing => F[Response[F]]
+        ): F[Response[F]] =
+        boundary
+          .readOneById(id)
+          .flatMap {
+            case Some(todo) => onFound(todo)
+            case None       => displayNoTodosFoundMessage
+          }
+
+      private val displayNoTodosFoundMessage: F[Response[F]] =
+        NotFound("No todos found!")
 
       private val deleteAll: F[Response[F]] =
         boundary.deleteAll >> NoContent()
