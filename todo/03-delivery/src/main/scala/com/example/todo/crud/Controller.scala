@@ -76,7 +76,7 @@ object Controller {
                 case "d"    => delete.as(true)
                 case "da"   => deleteAll.as(true)
                 case "sa"   => showAll.as(true)
-                case "sd"   => searchByPartialDescription.as(true)
+                case "sd"   => searchByDescription.as(true)
                 case "sid"  => searchById.as(true)
                 case "ud"   => updateDescription.as(true)
                 case "udl"  => updateDeadline.as(true)
@@ -93,7 +93,7 @@ object Controller {
             case "d"    => delete.as(true)
             case "da"   => deleteAll.as(true)
             case "sa"   => showAll.as(true)
-            case "sd"   => searchByPartialDescription.as(true)
+            case "sd"   => searchByDescription.as(true)
             case "sid"  => searchById.as(true)
             case "ud"   => updateDescription.as(true)
             case "udl"  => updateDeadline.as(true)
@@ -222,7 +222,7 @@ object Controller {
         s"$renderedId $renderedDescription is due on $renderedDeadline."
       }
 
-      private val searchByPartialDescription: F[Unit] =
+      private val searchByDescription: F[Unit] =
         descriptionPrompt
           .flatMap(boundary.readManyByPartialDescription)
           .flatMap(displayZeroOrMany)

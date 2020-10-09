@@ -25,12 +25,16 @@ object Controller {
       override def routes: HttpRoutes[F] =
         Router {
           "todos" -> HttpRoutes.of {
-            case GET -> Root         => showAll
-            case GET -> Root / id    => searchById(id)
+            case GET -> Root :? Description(d) => searchByDescription(d)
+            case GET -> Root                   => showAll
+            case GET -> Root / id              => searchById(id)
+
             case DELETE -> Root      => deleteAll
             case DELETE -> Root / id => delete(id)
           }
         }
+
+      object Description extends QueryParamDecoderMatcher[String]("description")
 
       private val showAll: F[Response[F]] =
         boundary.readAll.flatMap { todos =>
@@ -49,6 +53,14 @@ object Controller {
               .pipe(_.asJson)
               .pipe(Ok(_))
           }
+        }
+
+      private def searchByDescription(description: String): F[Response[F]] =
+        boundary.readManyByPartialDescription(description).flatMap { todos =>
+          todos
+            .map(response.Todo(pattern))
+            .asJson
+            .pipe(Ok(_))
         }
 
       private def delete(id: String): F[Response[F]] =

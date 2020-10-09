@@ -15,6 +15,9 @@ GET {{endpoint}}/bla
 ### Search by id (the one that works)
 GET {{endpoint}}/017d2d03-febf-464a-b92c-01a17898f551
 
+### Search by description
+GET {{endpoint}}?description=hoge
+
 ### Delete all
 DELETE {{endpoint}}
 
