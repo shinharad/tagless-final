@@ -8,6 +8,7 @@ import java.time.LocalDateTime
 import scala.util.chaining._
 
 import cats._
+import cats.data._
 import cats.implicits._
 
 import io.circe._
@@ -31,6 +32,9 @@ object Controller {
             "todos" -> HttpRoutes.of {
               case r @ POST -> Root =>
                 r.as[request.Todo.Create].flatMap(create)
+
+              case r @ PUT -> Root / id =>
+                r.as[request.Todo.Update].flatMap(update(id))
 
               case GET -> Root :? Description(d) => searchByDescription(d)
               case GET -> Root                   => showAll
@@ -78,6 +82,70 @@ object Controller {
               s"$trimmedInput does not match the required format $DeadlinePromptPattern."
             }
         }
+
+        private def update(
+            id: String
+          ): request.Todo.Update => F[Response[F]] = {
+          case payload: request.Todo.Update.Description =>
+            updateDescription(id, payload)
+
+          case payload: request.Todo.Update.Deadline =>
+            updateDeadline(id, payload)
+
+          case payload: request.Todo.Update.AllFields =>
+            updateAllFields(id, payload)
+
+        }
+
+        private def updateDescription(
+            id: String,
+            payload: request.Todo.Update.Description
+          ): F[Response[F]] =
+          withIdPrompt(id) { id =>
+            withReadOne(id) { todo =>
+              boundary
+                .updateOne(todo.withUpdatedDescription(payload.description))
+                .map(response.Todo(pattern))
+                .map(_.asJson)
+                .flatMap(Ok(_))
+            }
+          }
+
+        private def updateDeadline(
+            id: String,
+            payload: request.Todo.Update.Deadline
+          ): F[Response[F]] =
+          withIdPrompt(id) { id =>
+            withDeadlinePrompt(payload.deadline) { deadline =>
+              withReadOne(id) { todo =>
+                boundary
+                  .updateOne(todo.withUpdatedDeadline(deadline))
+                  .map(response.Todo(pattern))
+                  .map(_.asJson)
+                  .flatMap(Ok(_))
+              }
+            }
+          }
+
+        private def updateAllFields(
+            id: String,
+            payload: request.Todo.Update.AllFields
+          ): F[Response[F]] =
+          withIdPrompt(id) { id =>
+            withDeadlinePrompt(payload.deadline) { deadline =>
+              withReadOne(id) { todo =>
+                boundary
+                  .updateOne(
+                    todo
+                      .withUpdatedDescription(payload.description)
+                      .withUpdatedDeadline(deadline)
+                  )
+                  .map(response.Todo(pattern))
+                  .map(_.asJson)
+                  .flatMap(Ok(_))
+              }
+            }
+          }
 
         private val showAll: F[Response[F]] =
           boundary.readAll.flatMap { todos =>
@@ -153,6 +221,7 @@ object Controller {
   object request {
     object Todo {
       final case class Create(description: String, deadline: String)
+          extends Update
 
       object Create {
         implicit val decoder: Decoder[Create] =
@@ -163,6 +232,27 @@ object Controller {
           ]: EntityDecoder[F, Create] =
           jsonOf
       }
+
+      sealed abstract class Update extends Product with Serializable
+
+      object Update {
+        final case class Description(description: String) extends Update
+        final case class Deadline(deadline: String) extends Update
+        final type AllFields = Create
+
+        implicit val decoder: Decoder[Update] =
+          NonEmptyChain[Decoder[Update]](
+            deriveDecoder[AllFields].widen, // order matters
+            deriveDecoder[Description].widen,
+            deriveDecoder[Deadline].widen
+          ).reduceLeft(_ or _)
+
+        implicit def entityDecoder[
+            F[_]: effect.Sync
+          ]: EntityDecoder[F, Update] =
+          jsonOf
+      }
+
     }
   }
 

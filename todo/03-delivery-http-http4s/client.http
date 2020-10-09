@@ -19,6 +19,28 @@ POST {{endpoint}}
   "deadline": "     2020-8-27h 22:30   "
 }
 
+### Update (description)
+PUT {{endpoint}}/be66b79a-b42e-4ee5-a574-8052aa6998df
+
+{
+  "description": "    update script   "
+}
+
+### Update (deadline)
+PUT {{endpoint}}/be66b79a-b42e-4ee5-a574-8052aa6998df
+
+{
+  "deadline": "     2020-9-27 22:30   "
+}
+
+### Update (all fields)
+PUT {{endpoint}}/be66b79a-b42e-4ee5-a574-8052aa6998df
+
+{
+  "description": "    update script2   ",
+  "deadline": "     2020-8-10 22:30   "
+}
+
 ### Search by id (no todos found)
 GET {{endpoint}}/396ebe2c-c230-40a0-80ec-f0cb40915e53
 
