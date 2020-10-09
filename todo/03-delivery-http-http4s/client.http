@@ -3,6 +3,18 @@
 ### Show all
 GET {{endpoint}}
 
+### Search by id (no todos found)
+GET {{endpoint}}/396ebe2c-c230-40a0-80ec-f0cb40915e53
+
+### Search by id (invalid)
+GET {{endpoint}}/396ebe2c-c230- 40a0-80ec-f0cb40915e53
+
+### Search by id (blows up)
+GET {{endpoint}}/bla
+
+### Search by id (the one that works)
+GET {{endpoint}}/017d2d03-febf-464a-b92c-01a17898f551
+
 ### Delete all
 DELETE {{endpoint}}
 

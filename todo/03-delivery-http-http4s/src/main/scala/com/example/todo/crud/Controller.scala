@@ -26,6 +26,7 @@ object Controller {
         Router {
           "todos" -> HttpRoutes.of {
             case GET -> Root         => showAll
+            case GET -> Root / id    => searchById(id)
             case DELETE -> Root      => deleteAll
             case DELETE -> Root / id => delete(id)
           }
@@ -40,10 +41,21 @@ object Controller {
             .pipe(Ok(_))
         }
 
+      private def searchById(id: String): F[Response[F]] =
+        withIdPrompt(id) { id =>
+          withReadOne(id) { todo =>
+            todo
+              .pipe(response.Todo(pattern))
+              .pipe(_.asJson)
+              .pipe(Ok(_))
+          }
+        }
+
       private def delete(id: String): F[Response[F]] =
         withIdPrompt(id) { id =>
           withReadOne(id) { todo =>
-            boundary.deleteOne(todo) >> NoContent()
+            boundary.deleteOne(todo) >>
+              NoContent()
           }
         }
 
