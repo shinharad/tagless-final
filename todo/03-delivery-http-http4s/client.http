@@ -3,6 +3,22 @@
 ### Show all
 GET {{endpoint}}
 
+### Create
+POST {{endpoint}}
+
+{
+  "description": "    buy milk    ",
+  "deadline": "     2020-8-27 22:30   "
+}
+
+### Create (with errors)
+POST {{endpoint}}
+
+{
+  "description": "    buy milk    ",
+  "deadline": "     2020-8-27h 22:30   "
+}
+
 ### Search by id (no todos found)
 GET {{endpoint}}/396ebe2c-c230-40a0-80ec-f0cb40915e53
 

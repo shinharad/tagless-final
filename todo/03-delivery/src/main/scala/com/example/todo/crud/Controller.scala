@@ -5,8 +5,6 @@ package crud
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-import scala.util.Try
-
 import cats._
 import cats.implicits._
 
@@ -134,12 +132,14 @@ object Controller {
         val formatter = DateTimeFormatter
           .ofPattern(DeadlinePromptPattern)
 
-        Try(LocalDateTime.parse(input, formatter))
-          .toEither
-          .left
-          .map { _ =>
+        val trimmedInput: String =
+          input.trim
+
+        Either
+          .catchNonFatal(LocalDateTime.parse(trimmedInput, formatter))
+          .leftMap { _ =>
             val renderedInput: String =
-              inColor(input)(scala.Console.YELLOW)
+              inColor(trimmedInput)(scala.Console.YELLOW)
 
             s"\n$renderedInput does not match the required format $DeadlinePromptFormat.${scala.Console.RESET}"
           }
