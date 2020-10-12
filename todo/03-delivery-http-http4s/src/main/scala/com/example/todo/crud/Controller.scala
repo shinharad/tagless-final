@@ -24,6 +24,8 @@ object Controller {
   def dsl[F[_]: effect.Sync, TodoId](
       pattern: DateTimeFormatter,
       boundary: Boundary[F, TodoId]
+    )(implicit
+      parse: Parse[String, TodoId]
     ): F[Controller[F]] =
     F.delay {
       new Controller[F] with Http4sDsl[F] {
@@ -193,10 +195,7 @@ object Controller {
           }
 
         private def toId(userInput: String): Either[String, TodoId] =
-          if (userInput.isEmpty || userInput.contains(" "))
-            Left(s"\n$userInput is not a valid id.")
-          else
-            Right(userInput)
+          parse(userInput).leftMap(_.getMessage)
 
         private def withReadOne(
             id: TodoId

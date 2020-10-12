@@ -15,7 +15,7 @@ object DependencyGraph {
     PostgresEntityGateway.dsl(resource).flatMap { gateway =>
       Controller.dsl(
         pattern = pattern,
-        boundary = Boundary.dsl[F](gateway)
+        boundary = Boundary.dsl(gateway)
       )
     }
 }

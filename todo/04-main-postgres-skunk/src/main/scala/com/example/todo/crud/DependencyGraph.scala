@@ -17,7 +17,7 @@ object DependencyGraph {
     PostgresEntityGateway.dsl(resource).map { gateway =>
       Controller.dsl(
         pattern = pattern,
-        boundary = Boundary.dsl[F](gateway),
+        boundary = Boundary.dsl(gateway),
         console = FancyConsole.dsl(console),
         random = random
       )

@@ -18,6 +18,8 @@ object Controller {
       pattern: DateTimeFormatter,
       console: FancyConsole[F],
       random: Random[F]
+    )(implicit
+      parse: Parse[String, TodoId]
     ): Controller[F] =
     new Controller[F] {
       override val program: F[Unit] = {
@@ -163,12 +165,7 @@ object Controller {
         }
 
       private def toId(userInput: String): Either[String, TodoId] =
-        if (userInput.isEmpty || userInput.contains(" "))
-          Left(
-            s"\n${scala.Console.YELLOW + userInput + scala.Console.RED} is not a valid id.${scala.Console.RESET}"
-          )
-        else
-          Right(userInput)
+        parse(userInput).leftMap(_.getMessage)
 
       private def withReadOne(
           id: TodoId

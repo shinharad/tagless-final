@@ -20,6 +20,7 @@ lazy val `todo` =
   project
     .in(file("."))
     .aggregate(
+      util,
       `cats-core`,
       `cats-effect`,
       domain,
@@ -32,6 +33,16 @@ lazy val `todo` =
       `main-http-http4s`,
       `main-postgres-skunk`,
       `main-http-http4s-postgres-skunk`
+    )
+
+lazy val util =
+  project
+    .in(file("00-util"))
+    .settings(commonSettings: _*)
+    .settings(
+      libraryDependencies ++= Seq(
+        org.typelevel.`cats-core`
+      )
     )
 
 lazy val `cats-core` =
@@ -72,6 +83,7 @@ lazy val core =
 lazy val delivery =
   project
     .in(file("03-delivery"))
+    .dependsOn(util % Cctt)
     .dependsOn(core % Cctt)
     // .dependsOn(`cats-effect` % Cctt)
     .settings(commonSettings: _*)
@@ -84,6 +96,7 @@ lazy val delivery =
 lazy val `delivery-http-http4s` =
   project
     .in(file("03-delivery-http-http4s"))
+    .dependsOn(util % Cctt)
     .dependsOn(core % Cctt)
     .settings(commonSettings: _*)
     .settings(

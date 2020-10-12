@@ -15,10 +15,10 @@ object DependencyGraph {
       console: Console[F],
       random: Random[F]
     ): F[Controller[F]] =
-    Ref.of(Vector.empty[Todo.Existing]).map { state =>
+    Ref.of(Vector.empty[Todo.Existing[Int]]).map { state =>
       Controller.dsl(
         pattern = pattern,
-        boundary = Boundary.dsl[F](
+        boundary = Boundary.dsl(
           gateway = InMemoryEntityGateway.dsl(state)
         ),
         console = FancyConsole.dsl(console),
