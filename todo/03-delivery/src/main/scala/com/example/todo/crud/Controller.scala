@@ -6,6 +6,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 import cats._
+import cats.data._
 import cats.implicits._
 
 trait Controller[F[_]] {
@@ -187,26 +188,26 @@ object Controller {
           console.putSuccess("Successfully deleted all todos.")
 
       private val showAll: F[Unit] =
-        boundary.readAll.flatMap(displayZeroOrMany)
+        boundary
+          .readAll
+          .map(NonEmptyVector.fromVector)
+          .flatMap(_.fold(displayNoTodosFoundMessage)(displayOneOrMany))
 
-      private def displayZeroOrMany(
-          todos: Vector[Todo.Existing[TodoId]]
-        ): F[Unit] =
-        if (todos.isEmpty)
-          displayNoTodosFoundMessage
-        else {
-          val uxMatters = if (todos.size == 1) "todo" else "todos"
+      private def displayOneOrMany(
+          todos: NonEmptyVector[Todo.Existing[TodoId]]
+        ): F[Unit] = {
+        val uxMatters = if (todos.size == 1) "todo" else "todos"
 
-          val renderedSize: String =
-            inColor(todos.size.toString)(scala.Console.GREEN)
+        val renderedSize: String =
+          inColor(todos.size.toString)(scala.Console.GREEN)
 
-          console.putStrLn(s"\nFound $renderedSize $uxMatters:\n") >>
-            todos
-              .sortBy(_.deadline)
-              .map(renderedWithPattern)
-              .traverse(console.putStrLn)
-              .void
-        }
+        console.putStrLn(s"\nFound $renderedSize $uxMatters:\n") >>
+          todos
+            .sortBy(_.deadline)(Order.fromOrdering)
+            .map(renderedWithPattern)
+            .traverse(console.putStrLn)
+            .void
+      }
 
       private def renderedWithPattern(todo: Todo.Existing[TodoId]): String = {
         val renderedId: String =
@@ -224,14 +225,14 @@ object Controller {
       private val searchByDescription: F[Unit] =
         descriptionPrompt
           .flatMap(boundary.readManyByPartialDescription)
-          .flatMap(displayZeroOrMany)
+          .map(NonEmptyVector.fromVector)
+          .flatMap(_.fold(displayNoTodosFoundMessage)(displayOneOrMany))
 
       private val searchById: F[Unit] =
         withIdPrompt { id =>
-          boundary
-            .readOneById(id)
-            .map(_.to(Vector))
-            .flatMap(displayZeroOrMany)
+          withReadOne(id) { todo =>
+            displayOneOrMany(NonEmptyVector.of(todo))
+          }
         }
 
       private val updateDescription: F[Unit] =
