@@ -21,9 +21,9 @@ import org.http4s.dsl.Http4sDsl
 import org.http4s.server.Router
 
 object Controller {
-  def dsl[F[_]: effect.Sync](
+  def dsl[F[_]: effect.Sync, TodoId](
       pattern: DateTimeFormatter,
-      boundary: Boundary[F]
+      boundary: Boundary[F, TodoId]
     ): F[Controller[F]] =
     F.delay {
       new Controller[F] with Http4sDsl[F] {
@@ -185,23 +185,23 @@ object Controller {
         private def withIdPrompt(
             id: String
           )(
-            onValidId: String => F[Response[F]]
+            onValidId: TodoId => F[Response[F]]
           ): F[Response[F]] =
           id.pipe(toId).pipe {
             case Right(id)   => onValidId(id)
             case Left(error) => BadRequest(error)
           }
 
-        private def toId(userInput: String): Either[String, String] =
+        private def toId(userInput: String): Either[String, TodoId] =
           if (userInput.isEmpty || userInput.contains(" "))
             Left(s"\n$userInput is not a valid id.")
           else
             Right(userInput)
 
         private def withReadOne(
-            id: String
+            id: TodoId
           )(
-            onFound: Todo.Existing => F[Response[F]]
+            onFound: Todo.Existing[TodoId] => F[Response[F]]
           ): F[Response[F]] =
           boundary
             .readOneById(id)

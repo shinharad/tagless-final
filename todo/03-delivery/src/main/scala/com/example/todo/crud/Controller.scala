@@ -13,8 +13,8 @@ trait Controller[F[_]] {
 }
 
 object Controller {
-  def dsl[F[_]: Monad](
-      boundary: Boundary[F],
+  def dsl[F[_]: Monad, TodoId](
+      boundary: Boundary[F, TodoId],
       pattern: DateTimeFormatter,
       console: FancyConsole[F],
       random: Random[F]
@@ -156,13 +156,13 @@ object Controller {
           }
         }
 
-      private def withIdPrompt(onValidId: String => F[Unit]): F[Unit] =
+      private def withIdPrompt(onValidId: TodoId => F[Unit]): F[Unit] =
         idPrompt.map(toId).flatMap {
           case Right(id)   => onValidId(id)
           case Left(error) => console.putError(error)
         }
 
-      private def toId(userInput: String): Either[String, String] =
+      private def toId(userInput: String): Either[String, TodoId] =
         if (userInput.isEmpty || userInput.contains(" "))
           Left(
             s"\n${scala.Console.YELLOW + userInput + scala.Console.RED} is not a valid id.${scala.Console.RESET}"
@@ -171,9 +171,9 @@ object Controller {
           Right(userInput)
 
       private def withReadOne(
-          id: String
+          id: TodoId
         )(
-          onFound: Todo.Existing => F[Unit]
+          onFound: Todo.Existing[TodoId] => F[Unit]
         ): F[Unit] =
         boundary
           .readOneById(id)
@@ -192,7 +192,9 @@ object Controller {
       private val showAll: F[Unit] =
         boundary.readAll.flatMap(displayZeroOrMany)
 
-      private def displayZeroOrMany(todos: Vector[Todo.Existing]): F[Unit] =
+      private def displayZeroOrMany(
+          todos: Vector[Todo.Existing[TodoId]]
+        ): F[Unit] =
         if (todos.isEmpty)
           displayNoTodosFoundMessage
         else {
@@ -209,7 +211,7 @@ object Controller {
               .void
         }
 
-      private def renderedWithPattern(todo: Todo.Existing): String = {
+      private def renderedWithPattern(todo: Todo.Existing[TodoId]): String = {
         val renderedId: String =
           inColor(todo.id.toString)(scala.Console.GREEN)
 

@@ -3,8 +3,8 @@ package com.example
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-sealed abstract class Todo extends Product with Serializable {
-  protected type ThisType <: Todo
+sealed abstract class Todo[+TodoId] extends Product with Serializable {
+  protected type ThisType <: Todo[TodoId]
 
   def description: String
 
@@ -16,8 +16,8 @@ sealed abstract class Todo extends Product with Serializable {
 }
 
 case object Todo {
-  final case class Existing(id: String, data: Data) extends Todo {
-    override protected type ThisType = Existing
+  final case class Existing[TodoId](id: TodoId, data: Data) extends Todo[TodoId] {
+    override protected type ThisType = Existing[TodoId]
 
     override def description: String =
       data.description
@@ -33,7 +33,7 @@ case object Todo {
   }
 
   final case class Data(description: String, deadline: LocalDateTime)
-      extends Todo {
+      extends Todo[Nothing] {
     override protected type ThisType = Data
 
     override def withUpdatedDescription(newDescription: String): ThisType =

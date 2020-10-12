@@ -20,10 +20,10 @@ final case class Todo(
   )
 
 object Todo {
-  def apply(
+  def apply[TodoId](
       pattern: DateTimeFormatter
     )(
-      existing: domain.Todo.Existing
+      existing: domain.Todo.Existing[TodoId]
     ): Todo =
     Todo(
       id = existing.id.toString,
