@@ -53,25 +53,96 @@ object Scope {
     case object None extends Option[Nothing]
   }
 
-  sealed abstract class Todo[+TodoId] extends Product with Serializable
+  sealed abstract class Todo[+TodoId] extends Product with Serializable {
+    import Todo._
+
+    final def fold[B](ifExisting: (TodoId, Data) => B)(ifData: (String, LocalDateTime) => B): B =
+      this match {
+        case Existing(id, data)          => ifExisting(id, data)
+        case Data(description, deadline) => ifData(description, deadline)
+      }
+  }
   object Todo {
     final case class Existing[+TodoId](id: TodoId, data: Data) extends Todo[TodoId]
     final case class Data(description: String, deadline: LocalDateTime) extends Todo[Nothing]
   }
 
-  sealed abstract class Either[+L, +R] extends Product with Serializable
+  sealed abstract class Either[+L, +R] extends Product with Serializable {
+    import Either._
+
+    final def fold[B](ifLeft: L => B)(ifRight: R => B): B =
+      this match {
+        case Left(l)  => ifLeft(l)
+        case Right(r) => ifRight(r)
+      }
+  }
   object Either {
     final case class Left[+L, +R](l: L) extends Either[L, R]
-    final case class Some[+L, +R](r: R) extends Either[L, R]
+    final case class Right[+L, +R](r: R) extends Either[L, R]
   }
 
-  sealed abstract class List[+A] extends Product with Serializable
+  sealed abstract class List[+A] extends Product with Serializable {
+    import List._
+
+    final def foldLeft[B](seed: => B)(f: (B, A) => B): B =
+      this match {
+        case Nil =>
+          seed
+
+        case head :: tail =>
+          val headResult = f(seed, head)
+          val result = tail.foldLeft(headResult)(f)
+
+          result
+      }
+
+    final def foldRight[B](seed: => B)(f: (A, B) => B): B =
+      this match {
+        case Nil =>
+          seed
+
+        case head :: tail =>
+          val tailResult = tail.foldRight(seed)(f)
+          val result = f(head, tailResult)
+
+          result
+      }
+
+  }
   object List {
     final case class ::[+A](head: A, tail: List[A]) extends List[A]
     case object Nil extends List[Nothing]
   }
 
-  sealed abstract class Tree[+A] extends Product with Serializable
+  sealed abstract class Tree[+A] extends Product with Serializable {
+    import Tree._
+
+    final def foldLeft[B](seed: => B)(f: (B, A) => B): B =
+      this match {
+        case Leaf =>
+          seed
+
+        case Branch(left, element, right) =>
+          val currentResult = f(seed, element)
+          val rightResult = right.foldLeft(currentResult)(f)
+          val leftResult = left.foldLeft(rightResult)(f)
+
+          leftResult
+      }
+
+    final def foldRight[B](seed: => B)(f: (A, B) => B): B =
+      this match {
+        case Leaf =>
+          seed
+
+        case Branch(left, element, right) =>
+          val leftResult = left.foldRight(seed)(f)
+          val rightResult = right.foldRight(leftResult)(f)
+          val result = f(element, rightResult)
+
+          result
+      }
+  }
   object Tree {
     final case class Branch[+A](
         left: Tree[A],
