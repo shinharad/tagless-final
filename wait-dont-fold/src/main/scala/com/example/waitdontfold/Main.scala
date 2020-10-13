@@ -15,22 +15,37 @@ object Scope {
   sealed abstract class Option[+A] extends Product with Serializable {
     import Option._
 
+    // def exists(p: A => Boolean): Boolean =
+    //   this match {
+    //     case None    => false
+    //     case Some(a) => p(a)
+    //   }
+
     def exists(p: A => Boolean): Boolean =
-      this match {
-        case None    => false
-        case Some(a) => p(a)
-      }
+      fold(false)(p)
+
+    // def map[B](f: A => B): Option[B] =
+    //   this match {
+    //     case None    => None
+    //     case Some(a) => Some(f(a))
+    //   }
 
     def map[B](f: A => B): Option[B] =
-      this match {
-        case None    => None
-        case Some(a) => Some(f(a))
-      }
+      fold[Option[B]](None)(a => Some(f(a)))
+
+    // def flatMap[B](f: A => Option[B]): Option[B] =
+    //   this match {
+    //     case None    => None
+    //     case Some(a) => f(a)
+    //   }
 
     def flatMap[B](f: A => Option[B]): Option[B] =
+      fold[Option[B]](None)(f)
+
+    final def fold[B](ifNone: => B)(ifSome: A => B): B =
       this match {
-        case None    => None
-        case Some(a) => f(a)
+        case None    => ifNone
+        case Some(a) => ifSome(a)
       }
   }
   object Option {
