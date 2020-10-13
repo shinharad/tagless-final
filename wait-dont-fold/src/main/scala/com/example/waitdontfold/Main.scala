@@ -56,7 +56,7 @@ object Scope {
   sealed abstract class Todo[+TodoId] extends Product with Serializable {
     import Todo._
 
-    final def fold[B](ifExisting: (TodoId, Data) => B)(ifData: (String, LocalDateTime) => B): B =
+    final def fold[B](ifExisting: (TodoId, Data) => B, ifData: (String, LocalDateTime) => B): B =
       this match {
         case Existing(id, data)          => ifExisting(id, data)
         case Data(description, deadline) => ifData(description, deadline)
@@ -70,7 +70,7 @@ object Scope {
   sealed abstract class Either[+L, +R] extends Product with Serializable {
     import Either._
 
-    final def fold[B](ifLeft: L => B)(ifRight: R => B): B =
+    final def fold[B](ifLeft: L => B, ifRight: R => B): B =
       this match {
         case Left(l)  => ifLeft(l)
         case Right(r) => ifRight(r)

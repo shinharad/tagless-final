@@ -2,14 +2,19 @@ package com.example
 package todo
 package crud
 
+import java.time.LocalDateTime
+
 import cats._
 import cats.implicits._
 
 import cats.effect.concurrent.Ref
 
 trait Statement[F[_]] {
-  def insertOne(data: Todo.Data): F[Todo.Existing[Int]]
-  def updateOne(todo: Todo.Existing[Int]): F[Todo.Existing[Int]]
+  def insertOne(
+      description: String,
+      deadline: LocalDateTime
+    ): F[Todo.Existing[Int]]
+  def updateOne(id: Int, data: Todo.Data): F[Todo.Existing[Int]]
   def selectAll: F[Vector[Todo.Existing[Int]]]
   def deleteMany(todos: Vector[Todo.Existing[Int]]): F[Unit]
   def deleteAll: F[Unit]
@@ -26,15 +31,19 @@ object Statement {
       private val nextId: F[Int] =
         selectAll.map(_.size)
 
-      override def insertOne(data: Todo.Data): F[Todo.Existing[Int]] =
+      override def insertOne(
+          description: String,
+          deadline: LocalDateTime
+        ): F[Todo.Existing[Int]] =
         nextId
-          .map(Todo.Existing[Int](_, data))
+          .map(Todo.Existing[Int](_, Todo.Data(description, deadline)))
           .flatMap { created =>
             state.modify(s => (s :+ created) -> created)
           }
 
-      override def updateOne(todo: Todo.Existing[Int]): F[Todo.Existing[Int]] =
+      override def updateOne(id: Int, data: Todo.Data): F[Todo.Existing[Int]] =
         state.modify { s =>
+          val todo = Todo.Existing(id, data)
           (s.filterNot(_.id === todo.id) :+ todo) -> todo
         }
 

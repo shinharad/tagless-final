@@ -18,10 +18,7 @@ object InMemoryEntityGateway {
       override def writeMany(
           todos: Vector[Todo[Int]]
         ): F[Vector[Todo.Existing[Int]]] =
-        todos.traverse {
-          case insert: Todo.Data          => statement.insertOne(insert)
-          case update: Todo.Existing[Int] => statement.updateOne(update)
-        }
+        todos.traverse(_.fold(statement.updateOne, statement.insertOne))
 
       override def readManyById(
           ids: Vector[Int]
