@@ -119,10 +119,9 @@ object Controller {
       private def withDeadlinePrompt(
           onSuccess: LocalDateTime => F[Unit]
         ): F[Unit] =
-        deadlinePrompt.map(toLocalDateTime).flatMap {
-          case Right(deadline) => onSuccess(deadline)
-          case Left(error)     => console.putError(error)
-        }
+        deadlinePrompt
+          .map(toLocalDateTime)
+          .flatMap(_.fold(console.putErrLn, onSuccess))
 
       private val deadlinePrompt: F[String] =
         console.getStrLnTrimmedWithPrompt(
@@ -160,10 +159,7 @@ object Controller {
         }
 
       private def withIdPrompt(onValidId: TodoId => F[Unit]): F[Unit] =
-        idPrompt.map(toId).flatMap {
-          case Right(id)   => onValidId(id)
-          case Left(error) => console.putError(error)
-        }
+        idPrompt.map(toId).flatMap(_.fold(console.putErrLn, onValidId))
 
       private def toId(userInput: String): Either[String, TodoId] =
         parse(userInput).leftMap(_.getMessage)
@@ -175,10 +171,7 @@ object Controller {
         ): F[Unit] =
         boundary
           .readOneById(id)
-          .flatMap {
-            case Some(todo) => onFound(todo)
-            case None       => displayNoTodosFoundMessage
-          }
+          .flatMap(_.fold(displayNoTodosFoundMessage)(onFound))
 
       private val displayNoTodosFoundMessage: F[Unit] =
         console.putWarning("\nNo todos found!")

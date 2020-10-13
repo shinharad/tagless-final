@@ -10,7 +10,7 @@ trait FancyConsole[F[_]] {
   def putStrLn(line: String): F[Unit]
   def putSuccess(line: String): F[Unit]
   def putWarning(line: String): F[Unit]
-  def putError(line: String): F[Unit]
+  def putErrLn(line: String): F[Unit]
   def putStrLnInColor(line: String)(color: String): F[Unit]
 }
 
@@ -38,7 +38,7 @@ object FancyConsole {
       override def putWarning(line: String): F[Unit] =
         putStrLnInColor(line)(scala.Console.YELLOW)
 
-      override def putError(line: String): F[Unit] =
+      override def putErrLn(line: String): F[Unit] =
         putStrLnInColor(line)(scala.Console.RED)
     }
 }

@@ -64,10 +64,7 @@ object Controller {
           )(
             onSuccess: LocalDateTime => F[Response[F]]
           ): F[Response[F]] =
-          deadline.pipe(toLocalDateTime) match {
-            case Right(deadline) => onSuccess(deadline)
-            case Left(error)     => BadRequest(error)
-          }
+          toLocalDateTime(deadline).fold(BadRequest(_), onSuccess)
 
         private def toLocalDateTime(
             input: String
@@ -189,10 +186,7 @@ object Controller {
           )(
             onValidId: TodoId => F[Response[F]]
           ): F[Response[F]] =
-          id.pipe(toId).pipe {
-            case Right(id)   => onValidId(id)
-            case Left(error) => BadRequest(error)
-          }
+          toId(id).fold(BadRequest(_), onValidId)
 
         private def toId(userInput: String): Either[String, TodoId] =
           parse(userInput).leftMap(_.getMessage)
@@ -204,10 +198,7 @@ object Controller {
           ): F[Response[F]] =
           boundary
             .readOneById(id)
-            .flatMap {
-              case Some(todo) => onFound(todo)
-              case None       => displayNoTodosFoundMessage
-            }
+            .flatMap(_.fold(displayNoTodosFoundMessage)(onFound))
 
         private val displayNoTodosFoundMessage: F[Response[F]] =
           NotFound("No todos found!")
