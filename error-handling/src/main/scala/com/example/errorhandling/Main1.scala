@@ -8,7 +8,7 @@ import cats._
 import cats.data._
 import cats.implicits._
 
-object Main extends App {
+object Main1 extends App {
   println("─" * 100)
 
   type TechnicalError = Throwable
@@ -17,25 +17,6 @@ object Main extends App {
   object BusinessError {
     case object Error1 extends BusinessError
     final case class Error2(msg: String) extends BusinessError
-  }
-
-  trait Console[F[_]] {
-    def good(in: Any): F[Unit]
-    def bad(in: Any): F[Unit]
-  }
-
-  object Console {
-    def dsl[F[_]: effect.Sync]: Console[F] =
-      new Console[F] {
-        import scala.Console._
-
-        override def good(in: Any): F[Unit] =
-          F.delay(println(GREEN + in + RESET))
-
-        override def bad(in: Any): F[Unit] =
-          F.delay(err.println(RED + in + RESET))
-
-      }
   }
 
   trait ErrorProducer[F[_]] {
@@ -101,7 +82,9 @@ object Main extends App {
           dsl
             .badTechnical
             .flatMap(console.good)
-            .handleErrorWith(console.bad)
+            .handleErrorWith {
+              case NonFatal(throwable) => console.bad(throwable)
+            }
 
         override def goodBusinessProgram: F[Unit] =
           dsl
