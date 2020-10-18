@@ -1,4 +1,4 @@
-import Dependencies._
+import Dependencies.{ io, _ }
 
 ThisBuild / organization := "com.example"
 ThisBuild / scalaVersion := "2.13.3"
@@ -34,6 +34,8 @@ lazy val commonSettings = Seq(
 
 lazy val dependencies = Seq(
   libraryDependencies ++= Seq(
+    dev.zio.zio,
+    io.`7mind`.izumi.`fundamentals-bio`,
     org.typelevel.`cats-core`,
     org.typelevel.`cats-effect`,
     org.typelevel.`cats-mtl-core`

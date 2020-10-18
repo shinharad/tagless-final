@@ -1,6 +1,22 @@
 import sbt._
 
 object Dependencies {
+  case object dev {
+    case object zio {
+      val zio =
+        "dev.zio" %% "zio" % "1.0.3"
+    }
+  }
+
+  case object io {
+    case object `7mind` {
+      case object izumi {
+        val `fundamentals-bio` =
+          "io.7mind.izumi" %% "fundamentals-bio" % "0.10.19"
+      }
+    }
+  }
+
   case object com {
     case object github {
       case object alexarchambault {
