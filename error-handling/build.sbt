@@ -35,7 +35,8 @@ lazy val commonSettings = Seq(
 lazy val dependencies = Seq(
   libraryDependencies ++= Seq(
     org.typelevel.`cats-core`,
-    org.typelevel.`cats-effect`
+    org.typelevel.`cats-effect`,
+    org.typelevel.`cats-mtl-core`
   ),
   libraryDependencies ++= Seq(
     com.github.alexarchambault.`scalacheck-shapeless_1.14`,
