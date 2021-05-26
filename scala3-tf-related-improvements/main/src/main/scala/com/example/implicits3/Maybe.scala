@@ -8,11 +8,12 @@ enum Maybe[+A]:
   case Nothing
 
 object Maybe:
-  given Applicative[Maybe]:
-    override def pure[A](a: A): Maybe[A] =
+  given Applicative[Maybe] with
+    def pure[A](a: A): Maybe[A] =
       Maybe.Just(a)
 
-    override def [A, B](fa: Maybe[A])map(ab: A => B): Maybe[B] =
-      fa match
-        case Just(a) => pure(ab(a))
-        case Nothing => Nothing
+    extension [A](fa: Maybe[A])
+      def map[B](ab: A => B): Maybe[B] =
+        fa match
+          case Just(a) => pure(ab(a))
+          case Nothing => Nothing
