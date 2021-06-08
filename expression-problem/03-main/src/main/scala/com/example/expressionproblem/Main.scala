@@ -84,7 +84,7 @@ object Main extends App {
 
   Program
     .Division
-    .dsl[EitherNec[String, *], Int](
+    .dsl[({type T[A] = EitherNec[String, A]})#T, Int](
       Evaluate.Literal.dsl,
       Evaluate.Negation.dsl,
       Evaluate.Addition.dsl,
@@ -110,7 +110,7 @@ object Main extends App {
 
   Program
     .DivisionInTheMiddle
-    .dsl[EitherNec[String, *], Int](
+    .dsl[({ type T[A] = EitherNec[String, A]})#T, Int](
       Evaluate.Literal.dsl,
       Evaluate.Negation.dsl,
       Evaluate.Addition.dsl,
@@ -136,7 +136,7 @@ object Main extends App {
 
   Program
     .DivisionWithTwoErrors
-    .dsl[EitherNec[String, *], Int](
+    .dsl[({ type T[A] = EitherNec[String, A]})#T, Int](
       Evaluate.Literal.dsl,
       Evaluate.Addition.dsl,
       Evaluate.Division.dsl
@@ -163,7 +163,7 @@ object Main extends App {
     .DivisionWithTwoErrors
  // .dsl[Either [           NonEmptyChain[String], *], Int](
  // .dsl[EitherT[Id,        NonEmptyChain[String], *], Int](
-    .dsl[EitherT[effect.IO, NonEmptyChain[String], *], Int](
+    .dsl[({type T[A] = EitherT[effect.IO, NonEmptyChain[String], A]})#T, Int](
       Evaluate.Literal.dsl,
       Evaluate.Addition.dsl,
       Evaluate.Division.dsl

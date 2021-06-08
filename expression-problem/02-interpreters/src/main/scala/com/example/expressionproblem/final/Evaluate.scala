@@ -40,9 +40,11 @@ object Evaluate {
   }
 
   object Division {
-    def dsl[
-        F[_]: MonadError[*[_], NonEmptyChain[String]]: NonEmptyParallel
-      ]: Division[F, Int] =
+    def dsl[F[_]](
+        implicit
+        M: MonadError[F, NonEmptyChain[String]],
+        N: NonEmptyParallel[F]
+      ): Division[F, Int] =
       new Division[F, Int] {
         override def divide(a1: F[Int], a2: F[Int]): F[Int] =
           (a1, a2).parTupled.flatMap {
