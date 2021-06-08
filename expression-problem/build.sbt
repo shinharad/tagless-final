@@ -1,7 +1,7 @@
 import Dependencies._
 
 ThisBuild / organization := "com.myorganization"
-ThisBuild / scalaVersion := "2.13.6"
+ThisBuild / scalaVersion := "3.0.0"
 ThisBuild / version := "0.0.1-SNAPSHOT"
 
 ThisBuild / scalacOptions ++= Seq(
@@ -9,7 +9,6 @@ ThisBuild / scalacOptions ++= Seq(
   "-feature",
   "-language:_",
   "-unchecked",
-  "-Wunused:_",
   // "-Xfatal-warnings"
 )
 
@@ -55,7 +54,6 @@ lazy val main =
 
 lazy val commonSettings = Seq(
   Compile / console / scalacOptions --= Seq(
-    "-Wunused:_",
     "-Xfatal-warnings"
   ),
   Test / console / scalacOptions :=
