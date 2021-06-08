@@ -32,7 +32,7 @@ lazy val interpreters =
     .settings(commonSettings: _*)
     .settings(
       libraryDependencies ++= Seq(
-        "org.typelevel" %% "cats-core" % "2.1.1"
+        "org.typelevel" %% "cats-core" % "2.6.1"
       )
     )
 
@@ -50,7 +50,7 @@ lazy val main =
     .settings(commonSettings: _*)
     .settings(
       libraryDependencies ++= Seq(
-        "org.typelevel" %% "cats-effect" % "2.1.3"
+        "org.typelevel" %% "cats-effect" % "3.1.1"
       )
     )
 

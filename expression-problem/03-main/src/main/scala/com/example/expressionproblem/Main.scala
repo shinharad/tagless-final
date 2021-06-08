@@ -156,6 +156,8 @@ object Main extends App {
 
   println("-" * 100)
 
+  import cats.effect.unsafe.implicits._
+
   // format: off
   Program
     .DivisionWithTwoErrors
