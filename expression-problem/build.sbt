@@ -1,8 +1,7 @@
 import Dependencies._
 
 ThisBuild / organization := "com.myorganization"
-ThisBuild / scalaVersion := "2.13.5" // TODO sbt-scala3-migrate を使うために一時的に変更
-// ThisBuild / scalaVersion := "2.13.6"
+ThisBuild / scalaVersion := "2.13.6"
 ThisBuild / version := "0.0.1-SNAPSHOT"
 
 ThisBuild / scalacOptions ++= Seq(
@@ -11,8 +10,7 @@ ThisBuild / scalacOptions ++= Seq(
   "-language:_",
   "-unchecked",
   "-Wunused:_",
-  // "-Xfatal-warnings",
-  "-Ymacro-annotations"
+  // "-Xfatal-warnings"
 )
 
 lazy val `expression-problem` =
