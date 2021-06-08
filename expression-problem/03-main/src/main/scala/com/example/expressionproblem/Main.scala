@@ -1,20 +1,21 @@
 package com.example
 package expressionproblem
 
-import scala.util.chaining._
+import scala.util.chaining.*
 
-import cats._
-import cats.data._
-import cats.instances.all._
+import cats.*
+import cats.data.*
+import cats.instances.all.*
 
-object Main extends App {
+@main def app(): Unit =
   println("-" * 100)
 
-  import `final`._
+  import `final`.*
 
   Program
     .Expression
     .dsl[Id, Int](
+      using
       Evaluate.Literal.dsl,
       Evaluate.Negation.dsl,
       Evaluate.Addition.dsl
@@ -25,6 +26,7 @@ object Main extends App {
   Program
     .Expression
     .dsl[Id, String](
+      using
       View.Literal.dsl,
       View.Negation.dsl,
       View.Addition.dsl
@@ -37,6 +39,7 @@ object Main extends App {
   Program
     .Multiplication
     .dsl[Id, Int](
+      using
       Evaluate.Literal.dsl,
       Evaluate.Negation.dsl,
       Evaluate.Addition.dsl,
@@ -48,6 +51,7 @@ object Main extends App {
   Program
     .Multiplication
     .dsl[Id, String](
+      using
       View.Literal.dsl,
       View.Negation.dsl,
       View.Addition.dsl,
@@ -61,6 +65,7 @@ object Main extends App {
   Program
     .MultiplicationInTheMiddle
     .dsl[Id, Int](
+      using
       Evaluate.Literal.dsl,
       Evaluate.Negation.dsl,
       Evaluate.Addition.dsl,
@@ -72,6 +77,7 @@ object Main extends App {
   Program
     .MultiplicationInTheMiddle
     .dsl[Id, String](
+      using
       View.Literal.dsl,
       View.Negation.dsl,
       View.Addition.dsl,
@@ -84,7 +90,8 @@ object Main extends App {
 
   Program
     .Division
-    .dsl[({type T[A] = EitherNec[String, A]})#T, Int](
+    .dsl[[A] =>> EitherNec[String, A], Int](
+      using
       Evaluate.Literal.dsl,
       Evaluate.Negation.dsl,
       Evaluate.Addition.dsl,
@@ -97,6 +104,7 @@ object Main extends App {
   Program
     .Division
     .dsl[Id, String](
+      using
       View.Literal.dsl,
       View.Negation.dsl,
       View.Addition.dsl,
@@ -110,7 +118,8 @@ object Main extends App {
 
   Program
     .DivisionInTheMiddle
-    .dsl[({ type T[A] = EitherNec[String, A]})#T, Int](
+    .dsl[[A] =>> EitherNec[String, A], Int](
+      using
       Evaluate.Literal.dsl,
       Evaluate.Negation.dsl,
       Evaluate.Addition.dsl,
@@ -123,6 +132,7 @@ object Main extends App {
   Program
     .DivisionInTheMiddle
     .dsl[Id, String](
+      using
       View.Literal.dsl,
       View.Negation.dsl,
       View.Addition.dsl,
@@ -136,7 +146,8 @@ object Main extends App {
 
   Program
     .DivisionWithTwoErrors
-    .dsl[({ type T[A] = EitherNec[String, A]})#T, Int](
+    .dsl[[A] =>> EitherNec[String, A], Int](
+      using
       Evaluate.Literal.dsl,
       Evaluate.Addition.dsl,
       Evaluate.Division.dsl
@@ -147,6 +158,7 @@ object Main extends App {
   Program
     .DivisionWithTwoErrors
     .dsl[Id, String](
+      using
       View.Literal.dsl,
       View.Addition.dsl,
       View.Division.dsl
@@ -156,14 +168,15 @@ object Main extends App {
 
   println("-" * 100)
 
-  import cats.effect.unsafe.implicits._
+  import cats.effect.unsafe.implicits.*
 
   // format: off
   Program
     .DivisionWithTwoErrors
  // .dsl[Either [           NonEmptyChain[String], *], Int](
  // .dsl[EitherT[Id,        NonEmptyChain[String], *], Int](
-    .dsl[({type T[A] = EitherT[effect.IO, NonEmptyChain[String], A]})#T, Int](
+    .dsl[[A] =>> EitherT[effect.IO, NonEmptyChain[String], A], Int](
+      using
       Evaluate.Literal.dsl,
       Evaluate.Addition.dsl,
       Evaluate.Division.dsl
@@ -177,6 +190,7 @@ object Main extends App {
   Program
     .DivisionWithTwoErrors
     .dsl[Id, String](
+      using
       View.Literal.dsl,
       View.Addition.dsl,
       View.Division.dsl
@@ -185,4 +199,3 @@ object Main extends App {
     .tap(println)
 
   println("-" * 100)
-}
