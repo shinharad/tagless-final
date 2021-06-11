@@ -1,27 +1,16 @@
 import sbt._
 
 object Dependencies {
-  case object com {
-    case object github {
-      case object alexarchambault {
-        val `scalacheck-shapeless_1.14` =
-          "com.github.alexarchambault" %% "scalacheck-shapeless_1.14" % "1.2.5"
-      }
-    }
-
-    case object olegpy {
-      val `better-monadic-for` =
-        "com.olegpy" %% "better-monadic-for" % "0.3.1"
-    }
-  }
 
   case object dev {
     case object zio {
       val zio =
-        "dev.zio" %% "zio" % "1.0.0-RC21-2"
+        "dev.zio" %% "zio" % "1.0.9"
 
+      // monix が依存する cats-effect のバージョンに合わせている
       val `zio-interop-cats` =
-        "dev.zio" %% "zio-interop-cats" % "2.1.3.0-RC16"
+        "dev.zio" %% "zio-interop-cats" % "2.5.1.0"
+        // "dev.zio" %% "zio-interop-cats" % "3.1.1.0"
     }
   }
 
@@ -31,12 +20,12 @@ object Dependencies {
         dependency("generic")
 
       private def dependency(artifact: String): ModuleID =
-        "io.circe" %% s"circe-$artifact" % "0.13.0"
+        "io.circe" %% s"circe-$artifact" % "0.14.1"
     }
 
     case object monix {
       val `monix-eval` =
-        "io.monix" %% "monix-eval" % "3.2.2"
+        "io.monix" %% "monix-eval" % "3.4.0"
     }
   }
 
@@ -62,17 +51,17 @@ object Dependencies {
 
     case object scalacheck {
       val scalacheck =
-        "org.scalacheck" %% "scalacheck" % "1.14.3"
+        "org.scalacheck" %% "scalacheck" % "1.15.4"
     }
 
     case object scalatest {
       val scalatest =
-        "org.scalatest" %% "scalatest" % "3.2.2"
+        "org.scalatest" %% "scalatest" % "3.2.9"
     }
 
     case object scalatestplus {
-      val `scalacheck-1-14` =
-        "org.scalatestplus" %% "scalacheck-1-14" % "3.2.2.0"
+      val `scalacheck-1-15` =
+        "org.scalatestplus" %% "scalacheck-1-15" % "3.2.9.0"
     }
 
     case object slf4j {
@@ -81,16 +70,20 @@ object Dependencies {
     }
 
     case object tpolecat {
+      // monix が依存する cats-effect のバージョンに合わせている
       val `skunk-core` =
-        "org.tpolecat" %% "skunk-core" % "0.0.21"
+        "org.tpolecat" %% "skunk-core" % "0.0.28"
+        // "org.tpolecat" %% "skunk-core" % "0.2.0"
     }
 
     case object typelevel {
       val `cats-core` =
-        "org.typelevel" %% "cats-core" % "2.2.0"
+        "org.typelevel" %% "cats-core" % "2.6.1"
 
+      // monix の依存に合わせて 2.5.1 を使用
       val `cats-effect` =
-        "org.typelevel" %% "cats-effect" % "2.2.0"
+        "org.typelevel" %% "cats-effect" % "2.5.1"
+        // "org.typelevel" %% "cats-effect" % "3.1.1"
 
       val `discipline-scalatest` =
         "org.typelevel" %% "discipline-scalatest" % "2.0.1"

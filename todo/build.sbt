@@ -72,10 +72,9 @@ lazy val core =
         org.typelevel.`cats-core`
       ),
       libraryDependencies ++= Seq(
-        com.github.alexarchambault.`scalacheck-shapeless_1.14`,
         org.scalacheck.scalacheck,
         org.scalatest.scalatest,
-        org.scalatestplus.`scalacheck-1-14`,
+        org.scalatestplus.`scalacheck-1-15`,
         org.typelevel.`discipline-scalatest`
       ).map(_ % Test)
     )
@@ -176,7 +175,6 @@ lazy val `main-http-http4s-postgres-skunk` =
     )
 
 lazy val commonSettings = Seq(
-  addCompilerPlugin(com.olegpy.`better-monadic-for`),
   addCompilerPlugin(org.augustjune.`context-applied`),
   addCompilerPlugin(org.typelevel.`kind-projector`),
   Compile / console / scalacOptions --= Seq(
