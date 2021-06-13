@@ -27,7 +27,7 @@ object Controller {
     )(implicit
       parse: Parse[String, TodoId]
     ): F[Controller[F]] =
-    F.delay {
+    implicitly[effect.Sync[F]].delay {
       new Controller[F] with Http4sDsl[F] {
         override def routes: HttpRoutes[F] =
           Router {

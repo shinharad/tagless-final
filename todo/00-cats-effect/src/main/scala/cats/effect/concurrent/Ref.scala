@@ -17,16 +17,16 @@ trait Ref[F[_], A] {
 
 object Ref {
   def of[F[_]: Sync, A](a: A) =
-    F.delay {
+    implicitly[Sync[F]].delay {
       new Ref[F, A] {
         private[this] val state: AtomicReference[A] =
           new AtomicReference(a)
 
         override def get: F[A] =
-          F.delay(state.get)
+          implicitly[Sync[F]].delay(state.get)
 
         override def set(a: A): F[Unit] =
-          F.delay(state.set(a))
+          implicitly[Sync[F]].delay(state.set(a))
 
         override def update(aa: A => A): F[Unit] =
           updateAndGet(aa).void
@@ -51,7 +51,7 @@ object Ref {
               setOrDieTrying
           }
 
-          F.delay(setOrDieTrying)
+          implicitly[Sync[F]].delay(setOrDieTrying)
         }
       }
     }

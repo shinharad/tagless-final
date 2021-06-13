@@ -30,11 +30,6 @@ object Dependencies {
   }
 
   case object org {
-    case object augustjune {
-      val `context-applied` =
-        "org.augustjune" %% "context-applied" % "0.1.4"
-    }
-
     case object http4s {
       val `http4s-blaze-server` =
         dependency("blaze-server")

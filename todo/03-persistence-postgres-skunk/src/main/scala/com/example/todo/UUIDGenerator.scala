@@ -11,10 +11,10 @@ trait UUIDGenerator[F[_]] {
 
 object UUIDGenerator {
   implicit def dsl[F[_]: effect.Sync]: F[UUIDGenerator[F]] =
-    F.delay {
+    implicitly[effect.Sync[F]].delay {
       new UUIDGenerator[F] {
         override val genUUID: F[UUID] =
-          F.delay(UUID.randomUUID())
+          implicitly[effect.Sync[F]].delay(UUID.randomUUID())
       }
     }
 }

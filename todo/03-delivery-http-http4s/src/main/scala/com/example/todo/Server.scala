@@ -17,7 +17,7 @@ object Server {
     )(
       httpApp: HttpApp[F]
     ): F[Server[F]] =
-    F.delay {
+    implicitly[effect.ConcurrentEffect[F]].delay {
       new Server[F] {
         override val serve: F[Unit] =
           BlazeServerBuilder(executionContext)

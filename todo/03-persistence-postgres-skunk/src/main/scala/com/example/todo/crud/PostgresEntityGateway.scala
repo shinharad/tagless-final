@@ -11,7 +11,7 @@ object PostgresEntityGateway {
   def dsl[F[_]: effect.Sync](
       resource: effect.Resource[F, skunk.Session[F]]
     ): F[EntityGateway[F, UUID]] =
-    F.delay {
+    implicitly[effect.Sync[F]].delay {
       new EntityGateway[F, UUID] {
         override def writeMany(
             todos: Vector[Todo[UUID]]
