@@ -220,7 +220,6 @@ lazy val `main-http-http4s-postgres-skunk` =
     )
 
 lazy val commonSettings = Seq(
-  addCompilerPlugin(org.typelevel.`kind-projector`),
   Compile / compile / scalacOptions ++= Seq(
     "-Ytasty-reader"
   ),
