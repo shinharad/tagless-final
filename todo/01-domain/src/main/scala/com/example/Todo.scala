@@ -1,7 +1,6 @@
 package com.example
 
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 sealed abstract class Todo[+TodoId] extends Product with Serializable {
   protected type ThisType <: Todo[TodoId]

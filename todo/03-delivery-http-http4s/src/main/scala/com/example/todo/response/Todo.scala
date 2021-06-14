@@ -11,7 +11,6 @@ import org.http4s._
 import org.http4s.circe._
 
 import com.{ example => domain }
-import com.example.Todo.Existing
 
 final case class Todo(
     id: String,

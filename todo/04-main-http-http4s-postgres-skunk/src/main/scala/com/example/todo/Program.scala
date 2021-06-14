@@ -3,8 +3,6 @@ package todo
 
 import java.time.format.DateTimeFormatter
 
-import cats._
-import cats.data._
 import cats.implicits._
 
 import cats.effect._

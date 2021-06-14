@@ -2,7 +2,6 @@ package com.example
 package todo
 
 import cats._
-import cats.implicits._
 
 trait Console[F[_]] {
   def getStrLn: F[String]

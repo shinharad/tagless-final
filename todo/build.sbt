@@ -8,16 +8,6 @@ val scala3 = "3.0.0"
 ThisBuild / organization := "com.myorganization"
 ThisBuild / version := "0.0.1-SNAPSHOT"
 
-ThisBuild / scalacOptions ++= Seq(
-  "-deprecation",
-  "-feature",
-  "-language:_",
-  "-unchecked",
-  "Wvalue-discard",
-  "-Xfatal-warnings",
-  "-Ymacro-annotations"
-)
-
 lazy val `todo` =
   project
     .in(file("."))
@@ -53,12 +43,9 @@ lazy val util =
 lazy val `cats-core` =
   project
     .in(file("00-cats-core"))
-    // .settings(
-    //   scalaVersion := scala3,
-    //   crossScalaVersions ++= Seq(scala213, scala3)
-    // )
     .settings(
-      scalaVersion := scala213
+      scalaVersion := scala3,
+      crossScalaVersions ++= Seq(scala213, scala3)
     )
     .settings(commonSettings: _*)
 
@@ -220,13 +207,36 @@ lazy val `main-http-http4s-postgres-skunk` =
     )
 
 lazy val commonSettings = Seq(
-  Compile / compile / scalacOptions ++= Seq(
-    "-Ytasty-reader"
-  ),
-  Compile / console / scalacOptions --= Seq(
-    "-Wunused:_",
-    "-Xfatal-warnings"
-  ),
+  Compile / compile / scalacOptions ++= {
+    Seq(
+      "-encoding", "UTF-8",
+      "-feature",
+      "-unchecked",
+      "-deprecation",
+    ) ++
+      (CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((3, _)) => Seq(
+        )
+        case _ => Seq(
+          "Wvalue-discard",
+          "-Ymacro-annotations",
+          "-Xfatal-warnings",
+          "-Wunused:imports,privates,locals",
+          "Wvalue-discard",
+          "-Ytasty-reader"
+        )
+      })
+  },
+  Compile / console / scalacOptions --= {
+    (CrossVersion.partialVersion(scalaVersion.value) match {
+      case Some((3, _)) => Seq(
+      )
+      case _ => Seq(
+        "-Wunused:_",
+        "-Xfatal-warnings"
+      )
+    })
+  },
   Test / console / scalacOptions :=
     (Compile / console / scalacOptions).value
 )

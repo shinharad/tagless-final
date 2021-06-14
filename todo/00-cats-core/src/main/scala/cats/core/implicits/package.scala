@@ -1,7 +1,5 @@
 package cats
 
-import cats.core._
-
 package object implicits {
 
   final implicit class FunctorOps[F[_]: Functor, A](
