@@ -211,13 +211,15 @@ lazy val commonSettings = Seq(
     Seq(
       "-encoding", "UTF-8",
       "-feature",
-      "-unchecked",
-      "-deprecation",
+      // "-Xfatal-warnings", // disabled during the migration
     ) ++
       (CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((3, _)) => Seq(
+          "-unchecked",
+          "-source:3.0-migration"
         )
         case _ => Seq(
+          "-deprecation",
           "Wvalue-discard",
           "-Ymacro-annotations",
           "-Xfatal-warnings",
