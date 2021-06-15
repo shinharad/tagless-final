@@ -4,29 +4,28 @@ package concurrent
 
 import java.util.concurrent.atomic.AtomicReference
 
-import cats.implicits._
+import cats.implicits.{ given, * }
 
-trait Ref[F[_], A] {
+trait Ref[F[_], A]:
   def get: F[A]
   def set(a: A): F[Unit]
 
   def update(aa: A => A): F[Unit]
   def updateAndGet(aa: A => A): F[A]
   def modify[B](aab: A => (A, B)): F[B]
-}
 
-object Ref {
+object Ref:
   def of[F[_]: Sync, A](a: A) =
-    implicitly[Sync[F]].delay {
-      new Ref[F, A] {
+    summon[Sync[F]].delay {
+      new Ref[F, A]:
         private[this] val state: AtomicReference[A] =
           new AtomicReference(a)
 
         override def get: F[A] =
-          implicitly[Sync[F]].delay(state.get)
+          summon[Sync[F]].delay(state.get)
 
         override def set(a: A): F[Unit] =
-          implicitly[Sync[F]].delay(state.set(a))
+          summon[Sync[F]].delay(state.set(a))
 
         override def update(aa: A => A): F[Unit] =
           updateAndGet(aa).void
@@ -39,9 +38,9 @@ object Ref {
             desiredState -> result
           }
 
-        override def modify[B](aab: A => (A, B)): F[B] = {
+        override def modify[B](aab: A => (A, B)): F[B] =
           @scala.annotation.tailrec
-          def setOrDieTrying: B = {
+          def setOrDieTrying: B =
             val currentState = state.get
             val (desiredState, result) = aab(currentState)
 
@@ -49,10 +48,6 @@ object Ref {
               result
             else
               setOrDieTrying
-          }
 
-          implicitly[Sync[F]].delay(setOrDieTrying)
-        }
-      }
+          summon[Sync[F]].delay(setOrDieTrying)
     }
-}

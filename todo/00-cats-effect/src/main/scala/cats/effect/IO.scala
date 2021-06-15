@@ -1,40 +1,39 @@
 package cats
 package effect
 
-trait IO[A] {
+trait IO[A]:
   def unsafeRunSync(): A
-}
 
-object IO {
-  implicit val dsl: Sync[IO] =
-    new Sync[IO] {
-      override def pure[A](a: A): IO[A] = { () =>
-        a
-      }
+object IO:
+  given Sync[IO] = new Sync[IO]:
+    override def pure[A](a: A): IO[A] = { () =>
+      a
+    }
 
-      override def defer[A](fa: => IO[A]): IO[A] = { () =>
-        fa.unsafeRunSync()
-      }
+    override def defer[A](fa: => IO[A]): IO[A] = { () =>
+      fa.unsafeRunSync()
+    }
 
-      override def delay[A](a: => A): IO[A] = { () =>
-        a
-      }
+    override def delay[A](a: => A): IO[A] = { () =>
+      a
+    }
 
-      override def map[A, B](fa: IO[A])(ab: A => B): IO[B] = { () =>
+    override def product[A, B](fa: IO[A], fb: IO[B]): IO[(A, B)] = { () =>
+      val a = fa.unsafeRunSync()
+      val b = fb.unsafeRunSync()
+
+      a -> b
+    }
+
+    extension[A] (fa: IO[A])
+      override def map[B](ab: A => B): IO[B] = { () =>
         val a = fa.unsafeRunSync()
         val b = ab(a)
 
         b
       }
 
-      override def product[A, B](fa: IO[A], fb: IO[B]): IO[(A, B)] = { () =>
-        val a = fa.unsafeRunSync()
-        val b = fb.unsafeRunSync()
-
-        a -> b
-      }
-
-      override def flatMap[A, B](fa: IO[A])(afb: A => IO[B]): IO[B] = { () =>
+      override def flatMap[B](afb: A => IO[B]): IO[B] = { () =>
         val a = fa.unsafeRunSync()
         val fb = afb(a)
 
@@ -42,5 +41,3 @@ object IO {
 
         b
       }
-    }
-}

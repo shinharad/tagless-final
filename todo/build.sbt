@@ -44,8 +44,7 @@ lazy val `cats-core` =
   project
     .in(file("00-cats-core"))
     .settings(
-      scalaVersion := scala3,
-      crossScalaVersions ++= Seq(scala213, scala3)
+      scalaVersion := scala3
     )
     .settings(commonSettings: _*)
 
@@ -53,7 +52,7 @@ lazy val `cats-effect` =
   project
     .in(file("00-cats-effect"))
     .settings(
-      scalaVersion := scala213
+      scalaVersion := scala3
     )
     .dependsOn(`cats-core` % Cctt)
     .settings(commonSettings: _*)
@@ -216,7 +215,7 @@ lazy val commonSettings = Seq(
       (CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((3, _)) => Seq(
           "-unchecked",
-          "-source:3.0-migration"
+          // "-source:3.0-migration"
         )
         case _ => Seq(
           "-deprecation",
