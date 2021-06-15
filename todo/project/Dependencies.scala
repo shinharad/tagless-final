@@ -81,7 +81,7 @@ object Dependencies {
         // "org.typelevel" %% "cats-effect" % "3.1.1"
 
       val `discipline-scalatest` =
-        "org.typelevel" %% "discipline-scalatest" % "2.0.1"
+        "org.typelevel" %% "discipline-scalatest" % "2.1.5"
     }
   }
 }

@@ -32,11 +32,11 @@ lazy val util =
     .in(file("util"))
     .settings(commonSettings: _*)
     .settings(
-      scalaVersion := scala213
+      scalaVersion := scala3
     )
     .settings(
       libraryDependencies ++= Seq(
-        org.typelevel.`cats-core`
+        (org.typelevel.`cats-core`).cross(CrossVersion.for3Use2_13)
       )
     )
 
