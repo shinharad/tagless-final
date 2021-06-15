@@ -29,7 +29,7 @@ lazy val `todo` =
 
 lazy val util =
   project
-    .in(file("00-util"))
+    .in(file("util"))
     .settings(commonSettings: _*)
     .settings(
       scalaVersion := scala213
@@ -42,7 +42,7 @@ lazy val util =
 
 lazy val `cats-core` =
   project
-    .in(file("00-cats-core"))
+    .in(file("cats-core"))
     .settings(
       scalaVersion := scala3
     )
@@ -50,7 +50,7 @@ lazy val `cats-core` =
 
 lazy val `cats-effect` =
   project
-    .in(file("00-cats-effect"))
+    .in(file("cats-effect"))
     .settings(
       scalaVersion := scala3
     )
@@ -59,7 +59,7 @@ lazy val `cats-effect` =
 
 lazy val domain =
   project
-    .in(file("01-domain"))
+    .in(file("domain"))
     .settings(
       scalaVersion := scala213
     )
@@ -67,7 +67,7 @@ lazy val domain =
 
 lazy val core =
   project
-    .in(file("02-core"))
+    .in(file("core"))
     .settings(
       scalaVersion := scala213
     )
@@ -88,7 +88,7 @@ lazy val core =
 
 lazy val delivery =
   project
-    .in(file("03-delivery"))
+    .in(file("delivery"))
     .dependsOn(util % Cctt)
     .dependsOn(core % Cctt)
     // .dependsOn(`cats-effect` % Cctt)
@@ -104,7 +104,7 @@ lazy val delivery =
 
 lazy val `delivery-http-http4s` =
   project
-    .in(file("03-delivery-http-http4s"))
+    .in(file("delivery-http-http4s"))
     .dependsOn(util % Cctt)
     .dependsOn(core % Cctt)
     .settings(
@@ -123,7 +123,7 @@ lazy val `delivery-http-http4s` =
 
 lazy val persistence =
   project
-    .in(file("03-persistence"))
+    .in(file("persistence"))
     .dependsOn(core % Cctt)
     // .dependsOn(`cats-effect` % Cctt)
     .settings(
@@ -138,7 +138,7 @@ lazy val persistence =
 
 lazy val `persistence-postgres-skunk` =
   project
-    .in(file("03-persistence-postgres-skunk"))
+    .in(file("persistence-postgres-skunk"))
     .dependsOn(core % Cctt)
     .settings(
       scalaVersion := scala213
@@ -153,7 +153,7 @@ lazy val `persistence-postgres-skunk` =
 
 lazy val main =
   project
-    .in(file("04-main"))
+    .in(file("main"))
     .dependsOn(delivery % Cctt)
     .dependsOn(persistence % Cctt)
     .settings(
@@ -164,7 +164,7 @@ lazy val main =
 
 lazy val `main-http-http4s` =
   project
-    .in(file("04-main-http-http4s"))
+    .in(file("main-http-http4s"))
     .dependsOn(`delivery-http-http4s` % Cctt)
     .dependsOn(persistence % Cctt)
     .settings(
@@ -180,7 +180,7 @@ lazy val `main-http-http4s` =
 
 lazy val `main-postgres-skunk` =
   project
-    .in(file("04-main-postgres-skunk"))
+    .in(file("main-postgres-skunk"))
     .dependsOn(delivery % Cctt)
     .dependsOn(`persistence-postgres-skunk` % Cctt)
     .settings(
@@ -191,7 +191,7 @@ lazy val `main-postgres-skunk` =
 
 lazy val `main-http-http4s-postgres-skunk` =
   project
-    .in(file("04-main-http-http4s-postgres-skunk"))
+    .in(file("main-http-http4s-postgres-skunk"))
     .dependsOn(`delivery-http-http4s` % Cctt)
     .dependsOn(`persistence-postgres-skunk` % Cctt)
     .settings(
