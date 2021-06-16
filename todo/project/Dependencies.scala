@@ -41,7 +41,7 @@ object Dependencies {
         dependency("circe")
 
       private def dependency(artifact: String): ModuleID =
-        "org.http4s" %% s"http4s-$artifact" % "0.21.7"
+        "org.http4s" %% s"http4s-$artifact" % "0.21.24"
     }
 
     case object scalacheck {
