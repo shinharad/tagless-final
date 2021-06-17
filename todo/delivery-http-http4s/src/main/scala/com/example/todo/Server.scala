@@ -5,7 +5,7 @@ import cats._
 
 import org.http4s._
 import scala.concurrent._
-import org.http4s.server.blaze.BlazeServerBuilder
+import org.http4s.blaze.server._
 
 trait Server[F[_]] {
   def serve: F[Unit]

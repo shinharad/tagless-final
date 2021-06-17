@@ -36,7 +36,7 @@ lazy val util =
     )
     .settings(
       libraryDependencies ++= Seq(
-        (org.typelevel.`cats-core`).cross(CrossVersion.for3Use2_13)
+        org.typelevel.`cats-core`.cross(CrossVersion.for3Use2_13)
       )
     )
 
@@ -76,7 +76,7 @@ lazy val core =
     .settings(commonSettings: _*)
     .settings(
       libraryDependencies ++= Seq(
-        (org.typelevel.`cats-core`).cross(CrossVersion.for3Use2_13)
+        org.typelevel.`cats-core`.cross(CrossVersion.for3Use2_13)
       ),
       libraryDependencies ++= Seq(
         org.scalacheck.scalacheck,
@@ -98,7 +98,7 @@ lazy val delivery =
     .settings(commonSettings: _*)
     .settings(
       libraryDependencies ++= Seq(
-        (org.typelevel.`cats-effect`).cross(CrossVersion.for3Use2_13)
+        org.typelevel.`cats-effect`.cross(CrossVersion.for3Use2_13)
       )
     )
 
@@ -119,7 +119,7 @@ lazy val `delivery-http-http4s` =
         org.http4s.`http4s-circe`,
         org.http4s.`http4s-dsl`,
         org.typelevel.`cats-effect`
-      ) //.map(_.cross(CrossVersion.for3Use2_13))
+      ).map(_.cross(CrossVersion.for3Use2_13))
     )
 
 lazy val persistence =

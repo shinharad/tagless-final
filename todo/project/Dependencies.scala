@@ -7,7 +7,7 @@ object Dependencies {
       val zio =
         "dev.zio" %% "zio" % "1.0.9"
 
-      // monix が依存する cats-effect のバージョンに合わせている
+      // monix が推移的に依存する cats-effect のバージョンに合わせている
       val `zio-interop-cats` =
         "dev.zio" %% "zio-interop-cats" % "2.5.1.0"
         // "dev.zio" %% "zio-interop-cats" % "3.1.1.0"
@@ -41,7 +41,9 @@ object Dependencies {
         dependency("circe")
 
       private def dependency(artifact: String): ModuleID =
-        "org.http4s" %% s"http4s-$artifact" % "0.21.24"
+      // monix が推移的に依存する cats-effect のバージョンに合わせている
+        "org.http4s" %% s"http4s-$artifact" % "0.22.0-RC1"
+        // "org.http4s" %% s"http4s-$artifact" % "0.21.24"
     }
 
     case object scalacheck {
@@ -65,7 +67,7 @@ object Dependencies {
     }
 
     case object tpolecat {
-      // monix が依存する cats-effect のバージョンに合わせている
+      // monix が推移的に依存する cats-effect のバージョンに合わせている
       val `skunk-core` =
         "org.tpolecat" %% "skunk-core" % "0.0.28"
         // "org.tpolecat" %% "skunk-core" % "0.2.0"
@@ -75,7 +77,7 @@ object Dependencies {
       val `cats-core` =
         "org.typelevel" %% "cats-core" % "2.6.1"
 
-      // monix の依存に合わせて 2.5.1 を使用
+      // monix が推移的に依存する cats-effect のバージョンに合わせている
       val `cats-effect` =
         "org.typelevel" %% "cats-effect" % "2.5.1"
         // "org.typelevel" %% "cats-effect" % "3.1.1"
