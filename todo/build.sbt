@@ -62,7 +62,6 @@ lazy val domain =
     .in(file("domain"))
     .settings(
       scalaVersion := scala3
-      // scalaVersion := scala213
     )
     .settings(commonSettings: _*)
 
@@ -70,14 +69,14 @@ lazy val core =
   project
     .in(file("core"))
     .settings(
-      scalaVersion := scala213
+      scalaVersion := scala3
     )
     // .dependsOn(`cats-core` % Cctt)
     .dependsOn(domain % Cctt)
     .settings(commonSettings: _*)
     .settings(
       libraryDependencies ++= Seq(
-        org.typelevel.`cats-core`
+        (org.typelevel.`cats-core`).cross(CrossVersion.for3Use2_13)
       ),
       libraryDependencies ++= Seq(
         org.scalacheck.scalacheck,
@@ -94,12 +93,12 @@ lazy val delivery =
     .dependsOn(core % Cctt)
     // .dependsOn(`cats-effect` % Cctt)
     .settings(
-      scalaVersion := scala213
+      scalaVersion := scala3
     )
     .settings(commonSettings: _*)
     .settings(
       libraryDependencies ++= Seq(
-        org.typelevel.`cats-effect`
+        (org.typelevel.`cats-effect`).cross(CrossVersion.for3Use2_13)
       )
     )
 
@@ -109,6 +108,7 @@ lazy val `delivery-http-http4s` =
     .dependsOn(util % Cctt)
     .dependsOn(core % Cctt)
     .settings(
+      // scalaVersion := scala3
       scalaVersion := scala213
     )
     .settings(commonSettings: _*)
@@ -119,7 +119,7 @@ lazy val `delivery-http-http4s` =
         org.http4s.`http4s-circe`,
         org.http4s.`http4s-dsl`,
         org.typelevel.`cats-effect`
-      )
+      ) //.map(_.cross(CrossVersion.for3Use2_13))
     )
 
 lazy val persistence =
