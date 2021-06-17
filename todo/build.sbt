@@ -22,9 +22,9 @@ lazy val `todo` =
       persistence,
       `persistence-postgres-skunk`,
       main,
-      `main-http-http4s`,
-      `main-postgres-skunk`,
-      `main-http-http4s-postgres-skunk`
+      // `main-http-http4s`,
+      // `main-postgres-skunk`,
+      // `main-http-http4s-postgres-skunk`
     )
 
 lazy val util =
@@ -61,7 +61,8 @@ lazy val domain =
   project
     .in(file("domain"))
     .settings(
-      scalaVersion := scala213
+      scalaVersion := scala3
+      // scalaVersion := scala213
     )
     .settings(commonSettings: _*)
 
@@ -222,7 +223,7 @@ lazy val commonSettings = Seq(
           "Wvalue-discard",
           "-Ymacro-annotations",
           "-Xfatal-warnings",
-          "-Wunused:imports,privates,locals",
+          // "-Wunused:imports,privates,locals",
           "Wvalue-discard",
           "-Ytasty-reader"
         )
