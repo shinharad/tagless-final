@@ -22,9 +22,9 @@ lazy val `todo` =
       persistence,
       `persistence-postgres-skunk`,
       main,
-      // `main-http-http4s`,
-      // `main-postgres-skunk`,
-      // `main-http-http4s-postgres-skunk`
+      `main-http-http4s`,
+      `main-postgres-skunk`,
+      `main-http-http4s-postgres-skunk`
     )
 
 lazy val util =
