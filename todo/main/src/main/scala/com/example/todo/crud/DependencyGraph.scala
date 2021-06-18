@@ -7,7 +7,7 @@ import java.time.format.DateTimeFormatter
 import cats._
 import cats.implicits._
 
-import cats.effect.concurrent.Ref
+import cats.effect.Ref
 
 object DependencyGraph {
   def dsl[F[_]: effect.Sync](
@@ -15,7 +15,7 @@ object DependencyGraph {
       console: Console[F],
       random: Random[F]
     ): F[Controller[F]] =
-    Ref.of(Vector.empty[Todo.Existing[Int]]).map { state =>
+    Ref[F].of(Vector.empty[Todo.Existing[Int]]).map { state =>
       Controller.dsl(
         pattern = pattern,
         boundary = Boundary.dsl(

@@ -8,7 +8,8 @@ object Main extends App {
     ExecutionContext.global
 
   scala.util.Random.nextInt(3) match {
-    case 0 =>
+    case _ =>
+    // case 0 =>
       println(inColor("Running on cats.effect.IO")(scala.Console.RED))
       import cats.effect._
 
@@ -17,26 +18,26 @@ object Main extends App {
 
       Program.dsl[cats.effect.IO](executionContext).unsafeRunSync()
 
-    case 1 =>
-      println(inColor("Running on monix.eval.Task")(scala.Console.GREEN))
+    // case 1 =>
+    //   println(inColor("Running on monix.eval.Task")(scala.Console.GREEN))
 
-      import monix.execution.Scheduler.Implicits.global
+    //   import monix.execution.Scheduler.Implicits.global
 
-      Program
-        .dsl[monix.eval.Task](executionContext)
-        .runSyncUnsafe(duration.Duration.Inf)
+    //   Program
+    //     .dsl[monix.eval.Task](executionContext)
+    //     .runSyncUnsafe(duration.Duration.Inf)
 
-    case _ =>
-      println(inColor("Running on zio.Task")(scala.Console.CYAN))
+    // case _ =>
+    //   println(inColor("Running on zio.Task")(scala.Console.CYAN))
 
-      import zio.interop.catz._
-      import zio.interop.catz.implicits._
+    //   import zio.interop.catz._
+    //   import zio.interop.catz.implicits._
 
-      zio.Runtime.default.unsafeRun {
-        zio.Task.concurrentEffectWith { implicit cuncurrentEffect =>
-          Program.dsl[zio.Task](executionContext)
-        }
-      }
+    //   zio.Runtime.default.unsafeRun {
+    //     zio.Task.concurrentEffectWith { implicit cuncurrentEffect =>
+    //       Program.dsl[zio.Task](executionContext)
+    //     }
+    //   }
   }
 
   private def inColor(line: String)(color: String): String =

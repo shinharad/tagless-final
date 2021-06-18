@@ -5,7 +5,7 @@ package crud
 import cats._
 import cats.implicits._
 
-import cats.effect.concurrent.Ref
+import cats.effect.Ref
 
 object InMemoryEntityGateway {
   def dsl[F[_]: Monad](

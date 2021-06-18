@@ -44,6 +44,7 @@ object Dependencies {
       // monix が推移的に依存する cats-effect のバージョンに合わせている
         "org.http4s" %% s"http4s-$artifact" % "0.22.0-RC1"
         // "org.http4s" %% s"http4s-$artifact" % "0.21.24"
+        // "org.http4s" %% s"http4s-$artifact" % "1.0.0-M23"
     }
 
     case object scalacheck {
@@ -77,10 +78,8 @@ object Dependencies {
       val `cats-core` =
         "org.typelevel" %% "cats-core" % "2.6.1"
 
-      // monix が推移的に依存する cats-effect のバージョンに合わせている
       val `cats-effect` =
-        "org.typelevel" %% "cats-effect" % "2.5.1"
-        // "org.typelevel" %% "cats-effect" % "3.1.1"
+        "org.typelevel" %% "cats-effect" % "3.1.1"
 
       val `discipline-scalatest` =
         "org.typelevel" %% "discipline-scalatest" % "2.1.5"

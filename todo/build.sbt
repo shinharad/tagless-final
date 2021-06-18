@@ -18,13 +18,13 @@ lazy val `todo` =
       domain,
       core,
       delivery,
-      `delivery-http-http4s`,
+      // `delivery-http-http4s`, // TODO 移行のために一旦コメントアウト
       persistence,
-      `persistence-postgres-skunk`,
+      // `persistence-postgres-skunk`,
       main,
-      `main-http-http4s`,
-      `main-postgres-skunk`,
-      `main-http-http4s-postgres-skunk`
+      // `main-http-http4s`,
+      // `main-postgres-skunk`,
+      // `main-http-http4s-postgres-skunk`
     )
 
 lazy val util =
@@ -244,8 +244,9 @@ lazy val commonSettings = Seq(
 )
 
 lazy val effects = Seq(
-  dev.zio.`zio-interop-cats`,
-  dev.zio.zio,
-  io.monix.`monix-eval`,
+  // TODO 移行のために一旦コメントアウト
+  // dev.zio.`zio-interop-cats`,
+  // dev.zio.zio,
+  // io.monix.`monix-eval`,
   org.typelevel.`cats-effect`
 )

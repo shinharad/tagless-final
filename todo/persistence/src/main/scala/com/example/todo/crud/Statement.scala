@@ -7,7 +7,7 @@ import java.time.LocalDateTime
 import cats._
 import cats.implicits._
 
-import cats.effect.concurrent.Ref
+import cats.effect.Ref
 
 trait Statement[F[_]] {
   def insertOne(
