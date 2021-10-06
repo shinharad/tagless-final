@@ -5,3 +5,6 @@ trait Traverse[F[_]] extends Functor[F]:
     traverse(fa)(identity)
 
   def traverse[G[_]: Applicative, A, B](fa: F[A])(agb: A => G[B]): G[F[B]]
+
+object Traverse:
+  def apply[F[_]](using F: Traverse[F]): F.type = F

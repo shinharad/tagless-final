@@ -5,7 +5,7 @@ trait IO[A]:
   def unsafeRunSync(): A
 
 object IO:
-  given Sync[IO] = new Sync[IO]:
+  given Sync[IO] with
     override def pure[A](a: A): IO[A] = { () =>
       a
     }
